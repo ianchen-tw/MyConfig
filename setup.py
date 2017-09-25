@@ -29,8 +29,9 @@ elif "FreeBSD".upper() in sysname:
     bash_file = ".bash_profile"
     pkg_manager = 'pacman'
 else:
-    print("unknown system type")
-    exit(1)
+    bash_file = ".bashrc"
+    os.system('mv {}/bash_profile {}/bashrc'.format(CURDIR,CURDIR))
+    print("unknown system type, use .bashrc")
 
     
 
@@ -48,7 +49,7 @@ if __name__ =="__main__":
         filename = Path(filename)
         # Copy files
         if (HOMEDIR/filename).exists() :
-            if filecmp.cmp( CURDIR/filename , HOMEDIR/filename )==False:
+            if filecmp.cmp( str(CURDIR/filename) , str(HOMEDIR/filename) )==False:
                 # Files not the same, need to backup
                 print("Back up: ~/{} as: ~/{}"\
                         .format(str(filename), str(filename)+'.old'))
