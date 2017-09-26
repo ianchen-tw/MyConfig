@@ -14,42 +14,86 @@ import filecmp
 import shutil
 from pathlib import Path # python3 only 
 
-print("Initializing")
-
-sysname = os.uname().sysname.upper()
+# Global Variables
 HOMEDIR = Path.home()
-#HOMEDIR = Path.cwd().parent
 CURDIR = Path.cwd()
 
+os_dependent_names = {
+    'FreeBSD':{
+        'pkg_manager':'pkg',
+        'pkg_install':'install',
+        'bash_config_file':'.bash_profile',
+        }
+    ,'Darwin':{
+        'pkg_manager':'brew',
+        'pkg_install':'install',
+        'bash_config_file':'.bash_profile',
+        }
+    ,'Ubuntu':{
+        'pkg_manager':'apt',
+        'pkg_install_cmd':'install',
+        'bash_config_file':'.bashrc',
+        }
+    #,'Arch':{
+    #    }
+}
 
-# bash file
-if "Darwin".upper() in sysname:
-    bash_file = ".bash_profile"
-elif "FreeBSD".upper() in sysname:
-    bash_file = ".bash_profile"
-    pkg_manager = 'pacman'
-else:
-    bash_file = ".bashrc"
-    os.system('mv {}/bash_profile {}/bashrc'.format(CURDIR,CURDIR))
-    print("unknown system type, use .bashrc")
+def is_system( sys_name ):
+    if type( sys_name ) is not str:
+        raise TypeError('arg:sys_name need to be string type')
+    from subprocess import Popen, PIPE 
+    proc = Popen(['uname','-v'], stdout=PIPE)
+    system_info = proc.stdout.read().decode('utf-8')
+    return sys_name.upper() in system_info.upper()
 
-    
-
-def program_exists( program_name ):
+def exists_program( program_name ):
     if type( program_name ) is not str:
         raise TypeError('arg:program_name need to be string type')
     from shutil import which 
     return which(program_name) is not None 
 
+def user_confirm( question, default_ans='no' ):
+    '''Return True if user say yes'''
+    if type(question) is not str:
+        raise TypeError('arg:question need to be string type')
+    while True:
+        usr_ans = input(question).upper()
+        if usr_ans == '': usr_ans = default_ans 
+
+        if usr_ans not in ['YES','Y','NO','N']:
+            print('Need to type yes/no')
+            continue
+        else:
+            if usr_ans in ['YES', 'Y']:
+                return True
+            elif usr_ans in ['NO','N']:
+                return False
+            else:
+                raise Exception("Internal Error, please check the source code")
 
 if __name__ =="__main__":
+    print("Initializing")
+
+
+    if is_system("Darwin"):
+        bash_file = ".bash_profile"
+    elif is_system('FreeBSD'):
+        bash_file = ".bash_profile"
+        pkg_manager = 'pacman'
+    elif is_system('Ubuntu'):
+        bash_file = ".bashrc"
+        os.system('mv {}/bash_profile {}/bashrc'.format(CURDIR,CURDIR))
+    else:
+        bash_file = ".bash_profile"
+
+
 
     # Copy files
     for filename in [ bash_file, '.vimrc' ]:
         filename = Path(filename)
         # Copy files
-        if (HOMEDIR/filename).exists() :
-            if filecmp.cmp( str(CURDIR/filename) , str(HOMEDIR/filename) )==False:
+        if (HOMEDIR/filename).exists():
+            if filecmp.cmp( str(CURDIR/filename), str(HOMEDIR/filename))==False:
                 # Files not the same, need to backup
                 print("Back up: ~/{} as: ~/{}"\
                         .format(str(filename), str(filename)+'.old'))
@@ -65,6 +109,10 @@ if __name__ =="__main__":
     # Vim Plugin manager
         # Use vim-plug as defualt plugin manager 
     print("Install vim-plug,(Plugin manager for vim)")
+    if not exists_program('curl'):
+        print(" It seems that 'curl' is not installed on this machine")
+        exit(1)
+    
     os.system('curl -s -fLo {}/.vim/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'\
     .format(str(HOMEDIR)))
@@ -83,32 +131,21 @@ if __name__ =="__main__":
              \/     \/          \/     \/     \/     \/
     ''')
 
-    if not program_exists( 'pip3' ):
+    if not exists_program( 'pip3' ):
+        if user_confirm("Install pip? (yes/no) [no]:")is True:
+            if not exists_program('curl'):
+                print(" It seems that 'curl' is not installed on this machine")
+                raise Exception('Need to install curl')
 
-        while True:
-            usr_ans = input( "Install pip? (yes/no) [no]:").upper()
-            if usr_ans == '': usr_ans = 'N'
+            print("Downloading 'get-pip.py'...", end='')
+            url = "'https://bootstrap.pypa.io/get-pip.py'"
+            os.system("curl -sfk {} --output {}/get-pip.py".format(url, CURDIR))
+            print("Done")
 
-            if usr_ans not in ['YES','Y','NO','N']:
-                continue
-            else:
-                if usr_ans in ['YES', 'Y']:
-                    if not program_exists('curl'):
-                        raise Exception('Need to install curl')
-                    print("Downloading 'get-pip.py'...")
-                    os.system("curl -sfk 'https://bootstrap.pypa.io/get-pip.py'\
-                            --output {}/get-pip.py".format(CURDIR))
-
-                    print("ROOT password is required to installing pip")
-                    os.system("sudo -k python3 {}/get-pip.py".format(CURDIR))
-                    print("Installed pip successfully")
-                    print("Remove get-pip.py")
-                    os.system("sudo rm {}/get-pip.py".format(CURDIR))
-                    break
-
-                elif usr_ans in ['NO','N']:
-                    break
-
-
+            print("ROOT password is required for installing pip")
+            os.system("sudo -k python3 {}/get-pip.py".format(CURDIR))
+            print("Remove temporary file :'get-pip.py'")
+            os.system("sudo rm {}/get-pip.py".format(CURDIR))
+            print("Installed pip successfully")
 
 
