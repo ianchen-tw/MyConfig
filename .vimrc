@@ -1,4 +1,4 @@
- set foldmethod=marker foldlevel=0 
+" set foldmethod=marker foldlevel=0 
 
 " ============================================================================
 " vimrc of Ian Chen
@@ -8,11 +8,18 @@
 " plugin manager: vim-plug
 call plug#begin('~/.vim/plugged')
 
+
+" neocomplete is a newer version, butvim should compiled with lua support
+"Plug 'Shougo/neocomplete'
 Plug 'Shougo/neocomplcache.vim'
+
 Plug 'itchyny/lightline.vim'
+"Plug 'vim-airline/vim-airline'
+"Plug 'vim-airline/vim-airline-themes'
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle'}
 Plug 'jistr/vim-nerdtree-tabs'
-Plug 'majutsushi/tagbar'
+Plug 'jlanzarotta/bufexplorer'
+Plug 'majutsushi/tagbar',{ 'for': ['ruby','c','c++','python']}
 Plug 'tpope/vim-rails' ,{ 'for':'ruby'}
 Plug 'junegunn/goyo.vim'
 
@@ -88,6 +95,12 @@ endif
 " ============================================================================
 
 
+" Buffe Explorer
+nnoremap <leader>e :BufExplorer<CR>
+
+" Goyo
+nnoremap <leader>g :Goyo<CR>
+
 nnoremap <leader>t :NERDTreeToggle<CR>
 
 nnoremap <leader>q :q<cr>
@@ -140,6 +153,9 @@ iabbrev inlcude include
 let g:lightline = {
       \ 'colorscheme': 'seoul256',
       \ }
+
+" Goyo
+let g:goyo_width = 100
 
 
 " Tagbar Settings -----

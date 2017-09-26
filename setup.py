@@ -31,7 +31,7 @@ os_dependent_names = {
         }
     ,'Ubuntu':{
         'pkg_manager':'apt',
-        'pkg_install_cmd':'install',
+        'pkg_install':'install',
         'bash_config_file':'.bashrc',
         }
     #,'Arch':{
@@ -75,17 +75,20 @@ if __name__ =="__main__":
     print("Initializing")
 
 
-    if is_system("Darwin"):
-        bash_file = ".bash_profile"
-    elif is_system('FreeBSD'):
-        bash_file = ".bash_profile"
-        pkg_manager = 'pacman'
-    elif is_system('Ubuntu'):
-        bash_file = ".bashrc"
-        os.system('mv {}/bash_profile {}/bashrc'.format(CURDIR,CURDIR))
-    else:
-        bash_file = ".bash_profile"
+    bash_file = '.bash_profile'
+    bash_file = '.bashrc'
+    for os_type in os_dependent_names.keys():
+        if is_system(os_type):
+            cur_system = os_dependent_names[os_type]
+            bash_file = cur_system['bash_config_file']
+            pkg_manager = cur_system['pkg_manager']
+            pkg_install = cur_system['pkg_install']
+            break
 
+    if bash_file is not ".bash_profile":
+        os.system('mv {}/bash_profile {}/bashrc'.format(CURDIR,CURDIR))
+
+    #print("pkg_manager:{}".format(pkg_manager))
 
 
     # Copy files
@@ -111,15 +114,31 @@ if __name__ =="__main__":
     print("Install vim-plug,(Plugin manager for vim)")
     if not exists_program('curl'):
         print(" It seems that 'curl' is not installed on this machine")
-        exit(1)
+        print("  Curl is Needed in order to proceed installation")
+        if user_confirm("Install curl? (yes/no) [no]:")is True:
+            
+            pkg_dict = { 'pkg':pkg_manager, 'install':pkg_install}
+            os.system('sudo {pkg} {install} curl'.format(**pkg_dict))
+        else:
+            exit(1)
+    if not exists_program('git'):
+        print(" It seems that 'git' is not installed on this machine")
+        print("  Git is Needed in order to proceed installation")
+        if user_confirm("Install git? (yes/no) [no]:")is True:
+            
+            pkg_dict = { 'pkg':pkg_manager, 'install':pkg_install}
+            os.system('sudo {pkg} {install} git'.format(**pkg_dict))
+        else:
+            exit(1)
     
     os.system('curl -s -fLo {}/.vim/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'\
     .format(str(HOMEDIR)))
 
-    print("Install and upgrade all vim plugins")
+    print("Install and upgrade all vim plugins...",end='')
     # Update all Plugins
     os.system('vim -E -c PlugInstall -c PlugClean -c q -c q')
+    print("Done")
 
     print("Setup finished")
     print(r'''
