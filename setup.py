@@ -38,24 +38,27 @@ os_dependent_names = {
     #    }
 }
 
+def type_check( arg,arg_name,target_type):
+    if type(arg) is not target_type:
+        raise TypeError('{} require to be {}'.format( arg_name, target_type))
+
+
 def is_system( sys_name ):
-    if type( sys_name ) is not str:
-        raise TypeError('arg:sys_name need to be string type')
+    type_check( sys_name, 'sys_name', str)
+
     from subprocess import Popen, PIPE 
     proc = Popen(['uname','-v'], stdout=PIPE)
     system_info = proc.stdout.read().decode('utf-8')
     return sys_name.upper() in system_info.upper()
 
 def exists_program( program_name ):
-    if type( program_name ) is not str:
-        raise TypeError('arg:program_name need to be string type')
+    type_check( program_name, 'program_name', str)
     from shutil import which 
     return which(program_name) is not None 
 
 def user_confirm( question, default_ans='no' ):
     '''Return True if user say yes'''
-    if type(question) is not str:
-        raise TypeError('arg:question need to be string type')
+    type_check( question, 'question', str)
     while True:
         usr_ans = input(question).upper()
         if usr_ans == '': usr_ans = default_ans 
@@ -70,6 +73,28 @@ def user_confirm( question, default_ans='no' ):
                 return False
             else:
                 raise Exception("Internal Error, please check the source code")
+
+def require_program(program):
+    '''Install "Essential" program for installation
+        Exit program if user refuse to install
+        use pkg_maneger to install 
+    '''
+    type_check( program, 'program', str)
+    if not exists_program(program):
+        print(" It seems that '{}' is not installed on this machine".format(program))
+        print("  {} is Needed in order to proceed installation".format(program))
+        if user_confirm("Install {}? (yes/no) [no]:".format(program))is True:
+            pkg_dict = { 'pkg':pkg_manager
+                    ,'install':pkg_install
+                    ,'program':program 
+                    }
+            print("Installing {}...".format(program), end='')
+            os.system('sudo {pkg} {install} {program}'.format(**pkg_dict))
+            print("Done")
+        else:
+            exit(1)
+
+
 
 if __name__ =="__main__":
     print("Initializing")
@@ -112,24 +137,8 @@ if __name__ =="__main__":
     # Vim Plugin manager
         # Use vim-plug as defualt plugin manager 
     print("Install vim-plug,(Plugin manager for vim)")
-    if not exists_program('curl'):
-        print(" It seems that 'curl' is not installed on this machine")
-        print("  Curl is Needed in order to proceed installation")
-        if user_confirm("Install curl? (yes/no) [no]:")is True:
-            
-            pkg_dict = { 'pkg':pkg_manager, 'install':pkg_install}
-            os.system('sudo {pkg} {install} curl'.format(**pkg_dict))
-        else:
-            exit(1)
-    if not exists_program('git'):
-        print(" It seems that 'git' is not installed on this machine")
-        print("  Git is Needed in order to proceed installation")
-        if user_confirm("Install git? (yes/no) [no]:")is True:
-            
-            pkg_dict = { 'pkg':pkg_manager, 'install':pkg_install}
-            os.system('sudo {pkg} {install} git'.format(**pkg_dict))
-        else:
-            exit(1)
+    require_program('curl')
+    require_program('git')
     
     os.system('curl -s -fLo {}/.vim/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'\
@@ -152,9 +161,7 @@ if __name__ =="__main__":
 
     if not exists_program( 'pip3' ):
         if user_confirm("Install pip? (yes/no) [no]:")is True:
-            if not exists_program('curl'):
-                print(" It seems that 'curl' is not installed on this machine")
-                raise Exception('Need to install curl')
+            require_program('curl')
 
             print("Downloading 'get-pip.py'...", end='')
             url = "'https://bootstrap.pypa.io/get-pip.py'"
