@@ -34,8 +34,11 @@ os_dependent_names = {
         'pkg_install':'install',
         'bash_config_file':'.bashrc',
         }
-    #,'Arch':{
-    #    }
+    ,'Arch':{
+        'pkg_manager':'pacman',
+        'pkg_install':'-S',
+        'bash_config_file':'.bashrc'
+        }
 }
 
 def type_check( arg,arg_name,target_type):
