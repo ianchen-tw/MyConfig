@@ -18,6 +18,9 @@ from pathlib import Path # python3 only
 HOMEDIR = Path.home()
 CURDIR = Path.cwd()
 
+# Uncomment for test usage
+#HOMEDIR = Path.cwd().parent
+
 os_dependent_names = {
     'FreeBSD':{
         'pkg_manager':'pkg',
@@ -130,12 +133,14 @@ if __name__ =="__main__":
                         .format(str(filename), str(filename)+'.old'))
                 (HOMEDIR/filename).rename( str(HOMEDIR/filename)+'.old')
 
+                # in python3.4
+                # shutil don;t support implicit POSIXPath to string 
                 print("Create: {}".format(filename))
-                shutil.copy2( CURDIR/filename, HOMEDIR/filename)
+                shutil.copy2( str(CURDIR/filename), str(HOMEDIR/filename))
 
         else:
             print("Create: {}".format(filename))
-            shutil.copy2( CURDIR/filename, HOMEDIR/filename)
+            shutil.copy2( str(CURDIR/filename), str(HOMEDIR/filename))
 
     # Vim Plugin manager
         # Use vim-plug as defualt plugin manager 
