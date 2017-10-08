@@ -15,34 +15,39 @@ import shutil
 from pathlib import Path # python3 only 
 
 # Global Variables
-HOMEDIR = Path.home()
+#HOMEDIR = Path.home()
 CURDIR = Path.cwd()
 
 # Uncomment for test usage
-#HOMEDIR = Path.cwd().parent
+HOMEDIR = Path.cwd().parent
 
 os_dependent_names = {
     'FreeBSD':{
         'pkg_manager':'pkg',
         'pkg_install':'install',
+        'sudo_install':True,
         'bash_config_file':'.bash_profile',
         }
     ,'Darwin':{
         'pkg_manager':'brew',
         'pkg_install':'install',
+        'sudo_install':False,
         'bash_config_file':'.bash_profile',
         }
     ,'Ubuntu':{
         'pkg_manager':'apt',
         'pkg_install':'install',
+        'sudo_install':True,
         'bash_config_file':'.bashrc',
         }
     ,'Arch':{
         'pkg_manager':'pacman',
         'pkg_install':'-S',
+        'sudo_install':True,
         'bash_config_file':'.bashrc'
         }
 }
+
 
 def type_check( arg,arg_name,target_type):
     if type(arg) is not target_type:
@@ -95,7 +100,10 @@ def require_program(program):
                     ,'program':program 
                     }
             print("Installing {}...".format(program), end='')
-            os.system('sudo {pkg} {install} {program}'.format(**pkg_dict))
+            if sudo_install is True:
+                os.system('sudo {pkg} {install} {program}'.format(**pkg_dict))
+            else:
+                os.system('{pkg} {install} {program}'.format(**pkg_dict))
             print("Done")
         else:
             exit(1)
@@ -114,6 +122,7 @@ if __name__ =="__main__":
             bash_file = cur_system['bash_config_file']
             pkg_manager = cur_system['pkg_manager']
             pkg_install = cur_system['pkg_install']
+            sudo_install = cur_system['sudo_install']
             break
 
     if bash_file is not ".bash_profile":
