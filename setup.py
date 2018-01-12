@@ -67,12 +67,13 @@ def exists_program( program_name ):
     from shutil import which 
     return which(program_name) is not None 
 
-def user_confirm( question, default_ans='no' ):
+def user_confirm( question, default_ans='NO' ):
     '''Return True if user say yes'''
     type_check( question, 'question', str)
     while True:
         usr_ans = input(question).upper()
-        if usr_ans == '': usr_ans = default_ans 
+        if usr_ans == '':
+            usr_ans = default_ans 
 
         if usr_ans not in ['YES','Y','NO','N']:
             print('Need to type yes/no')
@@ -85,15 +86,11 @@ def user_confirm( question, default_ans='no' ):
             else:
                 raise Exception("Internal Error, please check the source code")
 
-def require_program(program):
-    '''Install "Essential" program for installation
-        Exit program if user refuse to install
-        use pkg_maneger to install 
+def install_program(program):
+    '''Install specific program from exist package manager
     '''
     type_check( program, 'program', str)
     if not exists_program(program):
-        print(" It seems that '{}' is not installed on this machine".format(program))
-        print("  {} is Needed in order to proceed installation".format(program))
         if user_confirm("Install {}? (yes/no) [no]:".format(program))is True:
             pkg_dict = { 'pkg':pkg_manager
                     ,'install':pkg_install
@@ -107,6 +104,17 @@ def require_program(program):
             print("Done")
         else:
             exit(1)
+
+def require_program(program):
+    '''Install "Essential" program for installation
+        Exit program if user refuse to install
+        use pkg_maneger to install 
+    '''
+    type_check( program, 'program', str)
+    if not exists_program(program):
+        print(" It seems that '{}' is not installed on this machine".format(program))
+        print("  {} is Needed in order to proceed installation".format(program))
+        install_program(program)
 
 
 
@@ -138,9 +146,11 @@ if __name__ =="__main__":
         if (HOMEDIR/filename).exists():
             if filecmp.cmp( str(CURDIR/filename), str(HOMEDIR/filename))==False:
                 # Files not the same, need to backup
-                print("Back up: ~/{} as: ~/{}"\
-                        .format(str(filename), str(filename)+'.old'))
-                (HOMEDIR/filename).rename( str(HOMEDIR/filename)+'.old')
+                if user_confirm("Already exist {}, overwrite it? (yes/no) [no]:"\
+                        .format(filename))is True:
+                    print("Back up: ~/{} as: ~/{}"\
+                            .format(str(filename), str(filename)+'.old'))
+                    (HOMEDIR/filename).rename( str(HOMEDIR/filename)+'.old')
 
                 # in python3.4
                 # shutil don;t support implicit POSIXPath to string 
@@ -165,6 +175,8 @@ if __name__ =="__main__":
     # Update all Plugins
     os.system('vim -E -c PlugInstall -c PlugClean -c q -c q')
     print("Done")
+
+    install_program('tmux');
 
     print("Setup finished")
     print(r'''
