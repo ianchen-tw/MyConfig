@@ -5,6 +5,9 @@ import os, os.path
 import filecmp
 import shutil
 
+#exit handler
+import atexit
+
 # Check python version
 def check_python_version():
     if sys.version_info.major < 3:
@@ -118,6 +121,12 @@ def require_program(program):
         print("  {} is Needed in order to proceed installation".format(program))
         install_program(program)
 
+def exit_handler():
+    ''' Clean up temporary files 
+    '''
+    if os.path.isfile('./get-pip.py'):
+        os.remove('./get-pip.py')
+atexit.register(exit_handler)
 
 
 if __name__ =="__main__":
