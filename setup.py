@@ -1,18 +1,20 @@
 # Setup tool for IanChen
 
+import sys
+import os, os.path
+import filecmp
+import shutil
+
 # Check python version
 def check_python_version():
-    import sys #temporarily import sys module
     if sys.version_info.major < 3:
         print("require Python 3 to run this code")
         print("run \"python3 setup.py\"")
         exit(1)
 check_python_version()
 
-import os, os.path
-import filecmp
-import shutil
-from pathlib import Path # python3 only 
+if sys.version_info.major >=3:
+    from pathlib import Path # python3 only
 
 # Global Variables
 #HOMEDIR = Path.home()
@@ -121,7 +123,6 @@ def require_program(program):
 if __name__ =="__main__":
     print("Initializing")
 
-
     bash_file = '.bash_profile'
     bash_file = '.bashrc'
     for os_type in os_dependent_names.keys():
@@ -198,7 +199,9 @@ if __name__ =="__main__":
             print("Done")
 
             print("ROOT password is required for installing pip")
-            os.system("sudo -k python3 {}/get-pip.py".format(CURDIR))
+            python_ver = sys.version_info
+            cur_py = "python{}.{}".format(python_ver.major, python_ver.minor)
+            os.system("sudo -k {} {}/get-pip.py".format(cur_py,CURDIR))
             print("Remove temporary file :'get-pip.py'")
             os.system("sudo rm {}/get-pip.py".format(CURDIR))
             print("Installed pip successfully")
