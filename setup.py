@@ -30,7 +30,7 @@ os_dependent_names = {
     'FreeBSD':{
         'pkg_manager':'pkg',
         'pkg_install':'install',
-        'pkg_noconfirm':'-y',
+        'pkg_noconfirm':'-yes',
         'sudo_install':True,
         'bash_config_file':'.bash_profile',
         }
@@ -108,9 +108,9 @@ def install_program(program):
                     }
             print("Installing {}...".format(program), end='')
             if sudo_install is True:
-                os.system('sudo {pkg} {install} {program} {noconfirm}'.format(**pkg_dict))
+                os.system('sudo {pkg} {noconfirm} {install} {program}'.format(**pkg_dict))
             else:
-                os.system('{pkg} {install} {program} {noconfirm}'.format(**pkg_dict))
+                os.system('{pkg} {install} {noconfirm} {program}'.format(**pkg_dict))
             print("Done")
         else:
             exit(1)
@@ -189,6 +189,7 @@ if __name__ =="__main__":
 
     print("Install and upgrade all vim plugins...",end='')
     # Update all Plugins
+    require_program('vim')
     os.system('vim -E -c PlugInstall -c PlugClean -c q -c q')
     print("Done")
 
@@ -218,7 +219,7 @@ if __name__ =="__main__":
             cur_py = "python{}.{}".format(python_ver.major, python_ver.minor)
             os.system("sudo -k {} {}/get-pip.py".format(cur_py,CURDIR))
             print("Remove temporary file :'get-pip.py'")
-            os.system("sudo rm {}/get-pip.py".format(CURDIR))
+            os.system("sudo rm -f {}/get-pip.py".format(CURDIR))
             print("Installed pip successfully")
 
 
