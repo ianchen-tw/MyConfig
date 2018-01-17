@@ -30,24 +30,28 @@ os_dependent_names = {
     'FreeBSD':{
         'pkg_manager':'pkg',
         'pkg_install':'install',
+        'pkg_noconfirm':'-y',
         'sudo_install':True,
         'bash_config_file':'.bash_profile',
         }
     ,'Darwin':{
         'pkg_manager':'brew',
         'pkg_install':'install',
+        'pkg_noconfirm':'', # not config yet
         'sudo_install':False,
         'bash_config_file':'.bash_profile',
         }
     ,'Ubuntu':{
         'pkg_manager':'apt',
         'pkg_install':'install',
+        'pkg_noconfirm':'--assume-yes',
         'sudo_install':True,
         'bash_config_file':'.bashrc',
         }
     ,'Arch':{
         'pkg_manager':'pacman',
         'pkg_install':'-S',
+        'pkg_noconfirm':'--noconfirm',
         'sudo_install':True,
         'bash_config_file':'.bashrc'
         }
@@ -99,13 +103,14 @@ def install_program(program):
         if user_confirm("Install {}? (yes/no) [no]:".format(program))is True:
             pkg_dict = { 'pkg':pkg_manager
                     ,'install':pkg_install
+                    ,'noconfirm':pkg_noconfirm
                     ,'program':program 
                     }
             print("Installing {}...".format(program), end='')
             if sudo_install is True:
-                os.system('sudo {pkg} {install} {program}'.format(**pkg_dict))
+                os.system('sudo {pkg} {install} {program} {noconfirm}'.format(**pkg_dict))
             else:
-                os.system('{pkg} {install} {program}'.format(**pkg_dict))
+                os.system('{pkg} {install} {program} {noconfirm}'.format(**pkg_dict))
             print("Done")
         else:
             exit(1)
@@ -140,6 +145,7 @@ if __name__ =="__main__":
             bash_file = cur_system['bash_config_file']
             pkg_manager = cur_system['pkg_manager']
             pkg_install = cur_system['pkg_install']
+            pkg_noconfirm = cur_system['pkg_noconfirm']
             sudo_install = cur_system['sudo_install']
             break
 
