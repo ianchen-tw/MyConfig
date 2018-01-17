@@ -30,7 +30,7 @@ os_dependent_names = {
     'FreeBSD':{
         'pkg_manager':'pkg',
         'pkg_install':'install',
-        'pkg_noconfirm':'-yes',
+        'pkg_noconfirm':'--yes',
         'sudo_install':True,
         'bash_config_file':'.bash_profile',
         }
@@ -108,7 +108,7 @@ def install_program(program):
                     }
             print("Installing {}...".format(program), end='')
             if sudo_install is True:
-                os.system('sudo {pkg} {noconfirm} {install} {program}'.format(**pkg_dict))
+                os.system('sudo {pkg} {install} {noconfirm} {program}'.format(**pkg_dict))
             else:
                 os.system('{pkg} {install} {noconfirm} {program}'.format(**pkg_dict))
             print("Done")
