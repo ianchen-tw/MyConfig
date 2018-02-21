@@ -29,76 +29,8 @@ HOMEDIR = Path(config.SETUP_DIR)
 
 os_dependent_names = config.os_dependent_names
 
-#from util_functions import type_check, is_system, exists_program, user_confirm
-#from util_functions import install_program, require_program
-
-def type_check( arg,arg_name,target_type):
-    if type(arg) is not target_type:
-        raise TypeError('{} require to be {}'.format( arg_name, target_type))
-
-
-def is_system( sys_name ):
-    type_check( sys_name, 'sys_name', str)
-
-    from subprocess import Popen, PIPE 
-    proc = Popen(['uname','-v'], stdout=PIPE)
-    system_info = proc.stdout.read().decode('utf-8')
-    return sys_name.upper() in system_info.upper()
-
-def exists_program( program_name ):
-    type_check( program_name, 'program_name', str)
-    from shutil import which 
-    return which(program_name) is not None 
-
-def user_confirm( question, default_ans='NO' ):
-    '''Return True if user say yes'''
-    type_check( question, 'question', str)
-    while True:
-        usr_ans = input(question).upper()
-        if usr_ans == '':
-            usr_ans = default_ans 
-
-        if usr_ans not in ['YES','Y','NO','N']:
-            print('Need to type yes/no')
-            continue
-        else:
-            if usr_ans in ['YES', 'Y']:
-                return True
-            elif usr_ans in ['NO','N']:
-                return False
-            else:
-                raise Exception("Internal Error, please check the source code")
-
-def install_program(program):
-    '''Install specific program from exist package manager
-    '''
-    type_check( program, 'program', str)
-    if not exists_program(program):
-        if user_confirm("Install {}? (yes/no) [no]:".format(program))is True:
-            pkg_dict = { 'pkg':pkg_manager
-                    ,'install':pkg_install
-                    ,'noconfirm':pkg_noconfirm
-                    ,'program':program 
-                    }
-            print("Installing {}...".format(program), end='')
-            if sudo_install is True:
-                os.system('sudo {pkg} {install} {noconfirm} {program}'.format(**pkg_dict))
-            else:
-                os.system('{pkg} {install} {noconfirm} {program}'.format(**pkg_dict))
-            print("Done")
-        else:
-            exit(1)
-
-def require_program(program):
-    '''Install "Essential" program for installation
-        Exit program if user refuse to install
-        use pkg_maneger to install 
-    '''
-    type_check( program, 'program', str)
-    if not exists_program(program):
-        print(" It seems that '{}' is not installed on this machine".format(program))
-        print("  {} is Needed in order to proceed installation".format(program))
-        install_program(program)
+from util_functions import type_check, is_system, exists_program, user_confirm
+from util_functions import install_program, require_program
 
 def exit_handler():
     ''' Clean up temporary files 
@@ -123,33 +55,54 @@ if __name__ =="__main__":
             sudo_install = cur_system['sudo_install']
             break
 
-    if bash_file is not ".bash_profile":
-        os.system('mv {}/bash_profile {}/bashrc'.format(CURDIR,CURDIR))
-
     #print("pkg_manager:{}".format(pkg_manager))
 
 
     # Copy files
-    for filename in [ bash_file, '.vimrc' ]:
+
+    # bashrc
+    #  bashrc is a special file that program should handle it specially
+    #  because in OSX, some emulator use different config file, .bash_profile instead of .bashrc
+    bashrc = Path('./bashrc')
+    if (HOMEDIR/bash_file).exists():
+        if filecmp.cmp( str(CURDIR/'bashrc'), str(HOMEDIR/bash_file))==False:
+            # Files not the same, need to backup
+            if user_confirm("Already exist {}, overwrite it? (yes/no) [no]:"\
+                    .format(bash_file))is True:
+                print("Back up: ~/{} as: ~/{}"\
+                        .format(str(bash_file), str(bash_file)+'.old'))
+                (HOMEDIR/bash_file).rename( str(HOMEDIR/bash_file)+'.old')
+
+            # in python3.4
+            # shutil don;t support implicit POSIXPath to string 
+            print("Create: {}".format(bash_file))
+            shutil.copy2( str(CURDIR/'bashrc'), str(HOMEDIR/bash_file))
+
+    else:
+        print("Create: {}".format(bash_file))
+        shutil.copy2( str(CURDIR/'bashrc'), str(HOMEDIR/bash_file))
+
+    # other dotfiles
+    for filename in [ '.vimrc' ]:
         filename = Path(filename)
         # Copy files
         if (HOMEDIR/filename).exists():
-            if filecmp.cmp( str(CURDIR/filename), str(HOMEDIR/filename))==False:
+            if filecmp.cmp( str(CURDIR/'dotfiles'/filename), str(HOMEDIR/filename))==False:
                 # Files not the same, need to backup
                 if user_confirm("Already exist {}, overwrite it? (yes/no) [no]:"\
                         .format(filename))is True:
                     print("Back up: ~/{} as: ~/{}"\
                             .format(str(filename), str(filename)+'.old'))
-                    (HOMEDIR/filename).rename( str(HOMEDIR/filename)+'.old')
+                    (HOMEDIR/filename).rename( str(HOMEDIR/'dotfiles'/filename)+'.old')
 
                 # in python3.4
                 # shutil don;t support implicit POSIXPath to string 
                 print("Create: {}".format(filename))
-                shutil.copy2( str(CURDIR/filename), str(HOMEDIR/filename))
+                shutil.copy2( str(CURDIR/'dotfiles'/filename), str(HOMEDIR/filename))
 
         else:
             print("Create: {}".format(filename))
-            shutil.copy2( str(CURDIR/filename), str(HOMEDIR/filename))
+            shutil.copy2( str(CURDIR/'dotfiles'/filename), str(HOMEDIR/filename))
 
     # Vim Plugin manager
         # Use vim-plug as defualt plugin manager 
