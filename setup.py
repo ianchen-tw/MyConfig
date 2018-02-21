@@ -5,6 +5,10 @@ import os, os.path
 import filecmp
 import shutil
 
+# Personal file
+import config
+
+
 #exit handler
 import atexit
 
@@ -20,43 +24,13 @@ if sys.version_info.major >=3:
     from pathlib import Path # python3 only
 
 # Global Variables
-#HOMEDIR = Path.home()
 CURDIR = Path.cwd()
+HOMEDIR = Path(config.SETUP_DIR)
 
-# Uncomment for test usage
-HOMEDIR = Path.cwd().parent
+os_dependent_names = config.os_dependent_names
 
-os_dependent_names = {
-    'FreeBSD':{
-        'pkg_manager':'pkg',
-        'pkg_install':'install',
-        'pkg_noconfirm':'--yes',
-        'sudo_install':True,
-        'bash_config_file':'.bash_profile',
-        }
-    ,'Darwin':{
-        'pkg_manager':'brew',
-        'pkg_install':'install',
-        'pkg_noconfirm':'', # not config yet
-        'sudo_install':False,
-        'bash_config_file':'.bash_profile',
-        }
-    ,'Ubuntu':{
-        'pkg_manager':'apt',
-        'pkg_install':'install',
-        'pkg_noconfirm':'--assume-yes',
-        'sudo_install':True,
-        'bash_config_file':'.bashrc',
-        }
-    ,'Arch':{
-        'pkg_manager':'pacman',
-        'pkg_install':'-S',
-        'pkg_noconfirm':'--noconfirm',
-        'sudo_install':True,
-        'bash_config_file':'.bashrc'
-        }
-}
-
+#from util_functions import type_check, is_system, exists_program, user_confirm
+#from util_functions import install_program, require_program
 
 def type_check( arg,arg_name,target_type):
     if type(arg) is not target_type:
