@@ -120,7 +120,7 @@ if __name__ =="__main__":
     os.system('vim -E -c PlugInstall -c PlugClean -c q -c q')
     print("Done")
 
-    install_program('tmux');
+    install_program('tmux')
 
     print("Setup finished")
     print(r'''
@@ -148,5 +148,12 @@ if __name__ =="__main__":
             print("Remove temporary file :'get-pip.py'")
             os.system("sudo rm -f {}/get-pip.py".format(CURDIR))
             print("Installed pip successfully")
+    
+    if not exists_program( 'fish' ):
+        print( "Fish shell is not installed in this machine")
+        if user_confirm("Install fish shell? (yes/no) [no]:") is True:
+            print("You select yes")
+        else:
+            print("You select no")
 
 
