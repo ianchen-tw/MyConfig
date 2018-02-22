@@ -2,6 +2,7 @@
 
 import sys
 import os, os.path
+import subprocess as sp
 import filecmp
 import shutil
 
@@ -53,6 +54,7 @@ if __name__ =="__main__":
             pkg_install = cur_system['pkg_install']
             pkg_noconfirm = cur_system['pkg_noconfirm']
             sudo_install = cur_system['sudo_install']
+            system_name = os_type
             break
 
     #print("pkg_manager:{}".format(pkg_manager))
@@ -149,7 +151,18 @@ if __name__ =="__main__":
             os.system("sudo rm -f {}/get-pip.py".format(CURDIR))
             print("Installed pip successfully")
     
+
     if not exists_program( 'fish' ):
+        # For Ubuntu, the "Ubuntu project shift" is not up-to-date
+        #  Add repo that maintained by the fish developers
+        if system_name == 'Ubuntu':
+            return_code = sp.Popen(\
+                    ['sudo','add-apt-repository', 'ppa:fish-shell/release-2'],
+                ).wait()
+            print("return code = : {}".format(return_code))
+            if return_code == 0:
+                os.system("sudo apt-get update")
+            
         install_program("fish")
 
     # continue to config fish
@@ -166,6 +179,11 @@ if __name__ =="__main__":
                 --noninteractive \
                 --path={}/.local/share/omf \
                 --config={}/.config/omf".format( HOMEDIR, HOMEDIR))
+
+        print("install bobthefish theme...", end='')
+        os.system('fish -c "omf install bobthefish"'.format(HOMEDIR))
+        print('Done')
+
         
         
         
