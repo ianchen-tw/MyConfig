@@ -52,13 +52,13 @@ for os_type in os_dependent_names.keys():
         sudo_install = cur_system['sudo_install']
         break
 
-def install_program(program):
+def install_program(program, no_confirm=False):
     '''Install specific program from exist package manager
         This function would ask user for installing
     '''
     type_check( program, 'program', str)
     if not exists_program(program):
-        if user_confirm("Install {}? (yes/no) [no]:".format(program))is True:
+        if no_confirm==True or user_confirm("Install {}? (yes/no) [no]:".format(program))is True:
             pkg_dict = { 'pkg':pkg_manager
                     ,'install':pkg_install
                     ,'noconfirm':pkg_noconfirm
@@ -76,10 +76,23 @@ def install_program(program):
 def require_program(program):
     '''Install "Essential" program for installation
         Exit program if user refuse to install
-        use pkg_maneger to install 
+        use pkg_maneger to install
+
+        @program : program's name or List of program's name
     '''
-    type_check( program, 'program', str)
-    if not exists_program(program):
-        print(" It seems that '{}' is not installed on this machine".format(program))
-        print("  {} is Needed in order to proceed installation".format(program))
+    def warning_info(program_name):
+        if( type(program_name) == list ):
+            nname = ", ".join(program_name)
+        print(" It seems that '{}' is not installed on this machine".format(nname))
+        print("  {} is Needed in order to proceed installation".format(nname))
+    if type(program) == str and not exists_program(program):
+        warning_info(program)
         install_program(program)
+    elif type(program) == list:
+        installation_list = []
+        for p in program:
+            if not exists_program(p): installation_list.append(p) 
+        warning_info(installation_list)
+        for p in installation_list: install_program(p, no_confirm=True)
+        
+        
