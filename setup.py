@@ -5,13 +5,12 @@ import os, os.path
 import subprocess as sp
 import filecmp
 import shutil
+import atexit
 
 # Personal file
 import config
-
-
-#exit handler
-import atexit
+from util_functions import type_check, is_system, exists_program, user_confirm
+from util_functions import install_program, require_program
 
 # Check python version
 def check_python_version():
@@ -19,19 +18,9 @@ def check_python_version():
         print("require Python 3 to run this code")
         print("run \"python3 setup.py\"")
         exit(1)
-check_python_version()
 
 if sys.version_info.major >=3:
     from pathlib import Path # python3 only
-
-# Global Variables
-CURDIR = Path.cwd()
-HOMEDIR = Path(config.SETUP_DIR)
-
-os_dependent_names = config.os_dependent_names
-
-from util_functions import type_check, is_system, exists_program, user_confirm
-from util_functions import install_program, require_program
 
 def exit_handler():
     ''' Clean up temporary files 
@@ -40,12 +29,18 @@ def exit_handler():
         os.remove('./get-pip.py')
     if os.path.isfile('./install_omf.fish'):
         os.remove('./install_omf.fish')
-atexit.register(exit_handler)
+
+# Global Variables
+CURDIR = Path.cwd()
+HOMEDIR = Path(config.SETUP_DIR)
+os_dependent_names = config.os_dependent_names
 
 
-if __name__ =="__main__":
+def main():
     print("Initializing")
-
+    check_python_version()
+    atexit.register(exit_handler)
+    
     for os_type in os_dependent_names.keys():
         if is_system(os_type):
             cur_system = os_dependent_names[os_type]
@@ -124,15 +119,6 @@ if __name__ =="__main__":
 
     install_program('tmux')
 
-    print("Setup finished")
-    print(r'''
-    .___                _________ .__
-    |   |____    ____   \_   ___ \|  |__   ____   ____
-    |   \__  \  /    \  /    \  \/|  |  \_/ __ \ /    \
-    |   |/ __ \|   |  \ \     \___|   Y  \  ___/|   |  \
-    |___(____  /___|  /  \______  /___|  /\___  >___|  /
-             \/     \/          \/     \/     \/     \/
-    ''')
 
     if not exists_program( 'pip3' ):
         if user_confirm("Install pip? (yes/no) [no]:")is True:
@@ -181,12 +167,18 @@ if __name__ =="__main__":
                 --config={}/.config/omf".format( HOMEDIR, HOMEDIR))
 
         print("install bobthefish theme...", end='')
-        os.system('fish -c "omf install bobthefish"'.format(HOMEDIR))
+        os.system('fish -c "omf install bobthefish"')
         print('Done')
 
-        
-        
-        
+    print("Setup finished")
+    print(r'''
+    .___                _________ .__
+    |   |____    ____   \_   ___ \|  |__   ____   ____
+    |   \__  \  /    \  /    \  \/|  |  \_/ __ \ /    \
+    |   |/ __ \|   |  \ \     \___|   Y  \  ___/|   |  \
+    |___(____  /___|  /  \______  /___|  /\___  >___|  /
+             \/     \/          \/     \/     \/     \/
+    ''')
 
-
-
+if __name__ =="__main__":
+    main()
