@@ -25,7 +25,7 @@ os_dependent_names = {
         'pkg_install':'install',
         'pkg_noconfirm':'--assume-yes',
         'sudo_install':True,
-        'bash_config_file':'.bashrc',
+        'bash_config_file':'.bash_profile',
         }
     ,'Arch':{
         'pkg_manager':'pacman',

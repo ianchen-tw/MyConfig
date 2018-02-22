@@ -37,14 +37,14 @@ def exit_handler():
     '''
     if os.path.isfile('./get-pip.py'):
         os.remove('./get-pip.py')
+    if os.path.isfile('./install_omf.fish'):
+        os.remove('./install_omf.fish')
 atexit.register(exit_handler)
 
 
 if __name__ =="__main__":
     print("Initializing")
 
-    bash_file = '.bash_profile'
-    bash_file = '.bashrc'
     for os_type in os_dependent_names.keys():
         if is_system(os_type):
             cur_system = os_dependent_names[os_type]
@@ -150,10 +150,25 @@ if __name__ =="__main__":
             print("Installed pip successfully")
     
     if not exists_program( 'fish' ):
-        print( "Fish shell is not installed in this machine")
-        if user_confirm("Install fish shell? (yes/no) [no]:") is True:
-            print("You select yes")
-        else:
-            print("You select no")
+        install_program("fish")
+
+    # continue to config fish
+    if exists_program('fish') and user_confirm("Install omf - fish package manager (yes/no) [no]") is True:
+        # install omf: fish package manager
+        require_program('curl')
+        url = "'https://get.oh-my.fish'"
+        os.system("curl -Lsfk {} --output {}/install_omf.fish".format(url, CURDIR))
+        print("Done")
+
+        print("install omf in {}/.local/share/omf")
+        print("configuratuion file is in {}/.config/omf")
+        os.system("fish install_omf.fish \
+                --noninteractive \
+                --path={}/.local/share/omf \
+                --config={}/.config/omf".format( HOMEDIR, HOMEDIR))
+        
+        
+        
+
 
 
