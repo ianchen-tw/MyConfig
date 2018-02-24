@@ -12,6 +12,9 @@ Todo:
     + jupyter setup
 
 """
+import sys
+sys.path.append("..")
+import config
 
 def install_python_env():
     pass

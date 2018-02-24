@@ -1,19 +1,10 @@
 import os
-import config
-
-def is_system( sys_name ):
-    type_check( sys_name, 'sys_name', str)
-
-    from subprocess import Popen, PIPE 
-    proc = Popen(['uname','-v'], stdout=PIPE)
-    system_info = proc.stdout.read().decode('utf-8')
-    return sys_name.upper() in system_info.upper()
+from config import sudo_install, pkg_manager, pkg_install, pkg_noconfirm
 
 
 def type_check( arg,arg_name,target_type):
     if type(arg) is not target_type:
         raise TypeError('{} require to be {}'.format( arg_name, target_type))
-
 
 
 def exists_program( program_name ):
@@ -40,25 +31,13 @@ def user_confirm( question, default_ans='NO' ):
             else:
                 raise Exception("Internal Error, please check the source code")
 
-
-os_dependent_names = config.os_dependent_names
-for os_type in os_dependent_names.keys():
-    if is_system(os_type):
-        cur_system = os_dependent_names[os_type]
-        bash_file = cur_system['bash_config_file']
-        pkg_manager = cur_system['pkg_manager']
-        pkg_install = cur_system['pkg_install']
-        pkg_noconfirm = cur_system['pkg_noconfirm']
-        sudo_install = cur_system['sudo_install']
-        break
-
 def install_program(program, no_confirm=False):
     '''Install specific program from exist package manager
         This function would ask user for installing
     '''
     type_check( program, 'program', str)
     if not exists_program(program):
-        if no_confirm==True or user_confirm("Install {}? (yes/no) [no]:".format(program))is True:
+        if no_confirm is True or user_confirm("Install {}? (yes/no) [no]:".format(program))is True:
             pkg_dict = { 'pkg':pkg_manager
                     ,'install':pkg_install
                     ,'noconfirm':pkg_noconfirm
@@ -91,8 +70,9 @@ def require_program(program):
     elif type(program) == list:
         installation_list = []
         for p in program:
-            if not exists_program(p): installation_list.append(p) 
-        warning_info(installation_list)
-        for p in installation_list: install_program(p, no_confirm=True)
+            if not exists_program(p): installation_list.append(p)
+        if installation_list != []:
+            warning_info(installation_list)
+            for p in installation_list: install_program(p, no_confirm=True)
         
         

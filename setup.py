@@ -9,8 +9,16 @@ import atexit
 
 # Personal file
 import config
-from util_functions import type_check, is_system, exists_program, user_confirm
+
+from config import bash_file
+from config import cur_system, sudo_install, system_name
+from config import pkg_manager, pkg_install, pkg_noconfirm
+
+from util_functions import type_check, exists_program, user_confirm
 from util_functions import install_program, require_program
+
+from installers import pyinstaller
+
 
 # Check python version
 def check_python_version():
@@ -36,25 +44,51 @@ HOMEDIR = Path(config.SETUP_DIR)
 os_dependent_names = config.os_dependent_names
 
 
+def fish_installation():
+    '''script to install fish
+    '''
+    if not exists_program( 'fish' ):
+        # For Ubuntu, the "Ubuntu project shift" is not up-to-date
+        #  Add repo that maintained by the fish developers
+        if system_name == 'Ubuntu':
+            return_code = sp.Popen(\
+                    ['sudo','add-apt-repository', 'ppa:fish-shell/release-2'],
+                ).wait()
+            print("return code = : {}".format(return_code))
+            if return_code == 0:
+                os.system("sudo apt-get update")
+            
+        install_program("fish")
+
+    # continue to config fish
+    if exists_program('fish') and user_confirm("Install omf - fish package manager (yes/no) [no]") is True:
+        # install omf: fish package manager
+        require_program('curl')
+        url = "'https://get.oh-my.fish'"
+        os.system("curl -Lsfk {} --output {}/install_omf.fish".format(url, CURDIR))
+        print("Done")
+
+        print("install omf in {}/.local/share/omf")
+        print("configuratuion file is in {}/.config/omf")
+        os.system("fish install_omf.fish \
+                --noninteractive \
+                --path={}/.local/share/omf \
+                --config={}/.config/omf".format( HOMEDIR, HOMEDIR))
+
+        print("install bobthefish theme...", end='')
+        os.system('fish -c "omf install bobthefish"')
+        print('Done')
+
+
+
 def main():
     print("Initializing")
     check_python_version()
     atexit.register(exit_handler)
     
-    for os_type in os_dependent_names.keys():
-        if is_system(os_type):
-            cur_system = os_dependent_names[os_type]
-            bash_file = cur_system['bash_config_file']
-            pkg_manager = cur_system['pkg_manager']
-            pkg_install = cur_system['pkg_install']
-            pkg_noconfirm = cur_system['pkg_noconfirm']
-            sudo_install = cur_system['sudo_install']
-            system_name = os_type
-            break
-
     #print("pkg_manager:{}".format(pkg_manager))
 
-
+    
     # Copy files
 
     # bashrc
@@ -104,8 +138,7 @@ def main():
     # Vim Plugin manager
         # Use vim-plug as defualt plugin manager 
     print("Install vim-plug,(Plugin manager for vim)")
-    require_program('curl')
-    require_program('git')
+    require_program(['curl','git'])
     
     os.system('curl -s -fLo {}/.vim/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'\
@@ -138,37 +171,6 @@ def main():
             print("Installed pip successfully")
     
 
-    if not exists_program( 'fish' ):
-        # For Ubuntu, the "Ubuntu project shift" is not up-to-date
-        #  Add repo that maintained by the fish developers
-        if system_name == 'Ubuntu':
-            return_code = sp.Popen(\
-                    ['sudo','add-apt-repository', 'ppa:fish-shell/release-2'],
-                ).wait()
-            print("return code = : {}".format(return_code))
-            if return_code == 0:
-                os.system("sudo apt-get update")
-            
-        install_program("fish")
-
-    # continue to config fish
-    if exists_program('fish') and user_confirm("Install omf - fish package manager (yes/no) [no]") is True:
-        # install omf: fish package manager
-        require_program('curl')
-        url = "'https://get.oh-my.fish'"
-        os.system("curl -Lsfk {} --output {}/install_omf.fish".format(url, CURDIR))
-        print("Done")
-
-        print("install omf in {}/.local/share/omf")
-        print("configuratuion file is in {}/.config/omf")
-        os.system("fish install_omf.fish \
-                --noninteractive \
-                --path={}/.local/share/omf \
-                --config={}/.config/omf".format( HOMEDIR, HOMEDIR))
-
-        print("install bobthefish theme...", end='')
-        os.system('fish -c "omf install bobthefish"')
-        print('Done')
 
     print("Setup finished")
     print(r'''

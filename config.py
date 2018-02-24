@@ -1,9 +1,13 @@
-# python 3.5
-from pathlib import Path
+from pathlib import Path #python3.5 required
+from subprocess import Popen, PIPE
 
 # default setting
 #SETUP_DIR = Path.home()
 SETUP_DIR = Path.cwd().parent
+
+# global vars would be setted later
+global cur_system, sudo_install, system_name
+global pkg_manager, pkg_install, pkg_noconfirm
 
 os_dependent_names = {
     'FreeBSD':{
@@ -36,5 +40,28 @@ os_dependent_names = {
         }
 }
 
+def init():
+    ''' Initialize global variables
+    '''
+    #print("computing system type...")
+    def is_system( sys_name ):
+        from subprocess import Popen, PIPE 
+        proc = Popen(['uname','-v'], stdout=PIPE)
+        system_info = proc.stdout.read().decode('utf-8')
+        return sys_name.upper() in system_info.upper()
+    
+    for os_type in os_dependent_names.keys():
+        if is_system(os_type):
+            global cur_system, sudo_install, system_name, bash_file
+            global pkg_manager, pkg_install, pkg_noconfirm
+            
+            cur_system = os_dependent_names[os_type]
+            bash_file = cur_system['bash_config_file']
+            pkg_manager = cur_system['pkg_manager']
+            pkg_install = cur_system['pkg_install']
+            pkg_noconfirm = cur_system['pkg_noconfirm']
+            sudo_install = cur_system['sudo_install']
+            system_name = os_type
+            break
 
-
+init()
