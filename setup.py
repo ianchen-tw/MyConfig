@@ -94,7 +94,6 @@ def main():
     # bashrc
     #  bashrc is a special file that program should handle it specially
     #  because in OSX, some emulator use different config file, .bash_profile instead of .bashrc
-    bashrc = Path('./bashrc')
     if (HOMEDIR/bash_file).exists():
         if filecmp.cmp( str(CURDIR/'bashrc'), str(HOMEDIR/bash_file))==False:
             # Files not the same, need to backup
@@ -152,7 +151,9 @@ def main():
 
     install_program('tmux')
 
+    pyinstaller.install_python_env();
 
+    """
     if not exists_program( 'pip3' ):
         if user_confirm("Install pip? (yes/no) [no]:")is True:
             require_program('curl')
@@ -169,7 +170,7 @@ def main():
             print("Remove temporary file :'get-pip.py'")
             os.system("sudo rm -f {}/get-pip.py".format(CURDIR))
             print("Installed pip successfully")
-    
+    """
 
 
     print("Setup finished")
