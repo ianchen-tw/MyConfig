@@ -2,7 +2,7 @@
 
 This module is a set of my python environment setup codes
 
-usage: import this module and call install_python_env()
+usage: import this module and call install()
 
 Todo:
     + pyenv: for using multiple pyhton version
@@ -43,5 +43,5 @@ def install_pip3():
             os.system("sudo rm -f {}/get-pip.py".format(CURDIR))
             print("Installed pip successfully")
 
-def install_python_env():
+def install():
     install_pip3()

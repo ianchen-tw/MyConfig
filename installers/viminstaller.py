@@ -18,6 +18,7 @@ sys.path.append("..")
 import config
 from util_functions import exists_program, user_confirm, require_program, install_program
 
+
 def install_vim():
     ''' install vim
         must support installing from system pkg manager or self compiling
@@ -42,6 +43,6 @@ def install_vim_plug():
     os.system('vim -E -c PlugInstall -c PlugClean -c q -c q')
     print("Done")
 
-def install_vim_env():
+def install():
     install_vim()
     install_vim_plug()
