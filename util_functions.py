@@ -1,4 +1,5 @@
 import os
+from shutil import which
 from config import sudo_install, pkg_manager, pkg_install, pkg_noconfirm
 
 
@@ -9,13 +10,12 @@ def type_check( arg,arg_name,target_type):
 
 def exists_program( program_name ):
     type_check( program_name, 'program_name', str)
-    from shutil import which 
-    return which(program_name) is not None 
+    return which(program_name) == None 
 
 def user_confirm( question, default_ans='NO' ):
     '''Return True if user say yes'''
     type_check( question, 'question', str)
-    while True:
+    while True: 
         usr_ans = input(question).upper()
         if usr_ans == '':
             usr_ans = default_ans 

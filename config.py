@@ -3,8 +3,10 @@ from subprocess import Popen, PIPE
 
 # default setting
 #SETUP_DIR = Path.home()
+global SETUP_DIR, CURDIR, HOMEDIR
 SETUP_DIR = Path.cwd().parent
-
+CURDIR = Path.cwd()
+HOMEDIR = Path(SETUP_DIR)
 # global vars would be setted later
 global cur_system, sudo_install, system_name
 global pkg_manager, pkg_install, pkg_noconfirm
