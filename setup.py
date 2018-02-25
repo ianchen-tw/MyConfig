@@ -15,7 +15,7 @@ from config import cur_system, sudo_install, system_name
 from config import pkg_manager, pkg_install, pkg_noconfirm
 
 from util_functions import type_check, exists_program, user_confirm
-from util_functions import install_program, require_program
+from util_functions import install_program, require_program, cp_with_backup
 
 from installers import pyinstaller
 from installers import fishinstaller
@@ -57,46 +57,13 @@ def main():
     # bashrc
     #  bashrc is a special file that program should handle it specially
     #  because in OSX, some emulator use different config file, .bash_profile instead of .bashrc
-    if (HOMEDIR/bash_file).exists():
-        if filecmp.cmp( str(CURDIR/'bashrc'), str(HOMEDIR/bash_file)) is False:
-            # Files not the same, need to backup
-            if user_confirm("Already exist {}, overwrite it? (yes/no) [no]:"\
-                    .format(bash_file))is True:
-                print("Back up: ~/{} as: ~/{}"\
-                        .format(str(bash_file), str(bash_file)+'.old'))
-                (HOMEDIR/bash_file).rename( str(HOMEDIR/bash_file)+'.old')
-
-            # in python3.4
-            # shutil don;t support implicit POSIXPath to string 
-            print("Create: {}".format(bash_file))
-            shutil.copy2( str(CURDIR/'bashrc'), str(HOMEDIR/bash_file))
-
-    else:
-        print("Create: {}".format(bash_file))
-        shutil.copy2( str(CURDIR/'bashrc'), str(HOMEDIR/bash_file))
+    cp_with_backup( src_file='./bashrc',des_folder=str(HOMEDIR), alter_name=bash_file)
 
     # other dotfiles
     for filename in [ '.vimrc' ]:
         filename = Path(filename)
         # Copy files
-        if (HOMEDIR/filename).exists(): # pylint: disable=E1101
-            if filecmp.cmp( str(CURDIR/'dotfiles'/filename), str(HOMEDIR/filename)) is False:
-                # Files not the same, need to backup
-                if user_confirm("Already exist {}, overwrite it? (yes/no) [no]:"\
-                        .format(filename))is True:
-                    print("Back up: ~/{} as: ~/{}"\
-                            .format(str(filename), str(filename)+'.old'))
-                    (HOMEDIR/filename).rename( str(HOMEDIR/'dotfiles'/filename)+'.old')
-
-                # in python3.4
-                # shutil don;t support implicit POSIXPath to string 
-                print("Create: {}".format(filename))
-                shutil.copy2( str(CURDIR/'dotfiles'/filename), str(HOMEDIR/filename))
-
-        else:
-            print("Create: {}".format(filename))
-            shutil.copy2( str(CURDIR/'dotfiles'/filename), str(HOMEDIR/filename))
-
+        cp_with_backup(src_file=CURDIR/'dotfiles'/filename,des_folder=HOMEDIR)
 
     install_program('tmux')
 

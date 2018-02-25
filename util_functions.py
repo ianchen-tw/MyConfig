@@ -6,21 +6,25 @@ from config import sudo_install, pkg_manager, pkg_install, pkg_noconfirm
 
 
 from pathlib import Path
-def cp_with_backup( src_file, des_folder, bak_suffix='old'):
+def cp_with_backup( src_file, des_folder, bak_suffix='old', alter_name=None):
     '''
         @scr_file : path to filename wich can be constructed by pathlib
         @des_folder : folder to copy to
+        @alter_name : give the new file anotehr name different form the original one
     '''
     src_file = Path(src_file)
     des_folder = Path( des_folder )
 
+    # Determine the output file name 
+    des_filename = src_file.name if alter_name is None else alter_name    
+     
+    # output file name (with) 
     if os.path.isdir(des_folder):
-        des_file = Path( des_folder, src_file.name)
+        des_file = Path( des_folder, des_filename)
     else:
-        des_file = Path( des_folder.parents[0], src_file.name )
+        des_file = Path( des_folder.parents[0], des_filename)
     
-    print("srcfile:{src}, des_folder:{folder}, des_file:{des}".format(\
-        src=src_file, folder=des_folder, des=des_file))
+    #print("srcfile:{src}, des_folder:{folder}, des_file:{des}".format(src=src_file, folder=des_folder, des=des_file))
     
     if des_file.exists():
         if filecmp.cmp( str(src_file), str(des_file) ) is False:
@@ -31,6 +35,8 @@ def cp_with_backup( src_file, des_folder, bak_suffix='old'):
                         .format( oldfile=des_file, bak_suffix=bak_suffix))
                 des_file.rename( "{}.{}".format(des_file,bak_suffix))
 
+    # in python3.4
+    # shutil don;t support implicit POSIXPath to string 
     print("Create: {}".format(str(des_file)))
     shutil.copy2( str(src_file), str(des_file))
 
@@ -42,7 +48,7 @@ def type_check( arg,arg_name,target_type):
 
 def exists_program( program_name ):
     type_check( program_name, 'program_name', str)
-    return which(program_name) == None 
+    return bool(which(program_name)) 
 
 def user_confirm( question, default_ans='NO' ):
     '''Return True if user say yes'''
@@ -109,5 +115,5 @@ def require_program(program):
         
         
 if __name__ == "__main__":
-    cp_with_backup( src_file='./test/src/from.py', des_folder='./test/des/')
-    
+    #cp_with_backup( src_file='./test/src/from.py', des_folder='./test/des/', alter_name='alterone')
+    print (exists_program("tqwerqe"))
