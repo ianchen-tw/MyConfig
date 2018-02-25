@@ -2,7 +2,7 @@
 
 This module is a set of my fish shell environment setup codes
 
-usage: import this module and call install_fish_env()
+usage: import this module and call install()
 
 Todo:
     + install fish
@@ -16,6 +16,7 @@ sys.path.append("..")
 import config
 import subprocess as sp
 from util_functions import exists_program, user_confirm, require_program, install_program
+from util_functions import cp_with_backup
 
 def install_fish():
     if not exists_program( 'fish' ):
@@ -28,29 +29,59 @@ def install_fish():
             print("return code = : {}".format(return_code))
             if return_code == 0:
                 os.system("sudo apt-get update")
-            
         install_program("fish")
 
+def omf_exist_package( pkg_name ):
+    '''Check if plugin exist in omf packcages 
+        This function use multiple python version implementation for fun :)
+    '''
+    vinfo = sys.version_info[0:2]
+    if vinfo < (3,5):
+        queryps = sp.Popen([ 'fish', '-c', 'omf list'], stdout=sp.PIPE)
+        msg = queryps.communicate()[0].decode("utf-8").split()
+    elif vinfo == (3,5):
+        # "run" function is added in 3.5
+        msg = sp.run(['fish','-c','omf list'], stdout=sp.PIPE).stdout
+        msg = msg.decode('utf-8').split()
+    elif vinfo >= (3,6):
+        # "encoding: arg is added in 3.6
+        msg = sp.run(['fish','-c','omf list'], stdout=sp.PIPE, encoding='utf-8').stdout.split()
+    
+    return pkg_name in msg
+
 def install_omf():
-    if exists_program('fish') and user_confirm("Install omf - fish package manager (yes/no) [no]") is True:
+    if exists_program('fish'):
+        if os.path.isdir('{home}/.config/omf'.format(home=config.HOMEDIR)):
+            msg = "Found existing omf directory, reinstall it? (yes/no) [no]"
+            if user_confirm(msg) is False:
+                return
+        elif user_confirm("Install omf - fish package manager (yes/no) [no]") is False:
+            return 
         # install omf: fish package manager
         require_program('curl')
         url = "'https://get.oh-my.fish'"
         os.system("curl -Lsfk {} --output {}/install_omf.fish".format(url, config.CURDIR))
         print("Done")
 
-        print("install omf in {}/.local/share/omf")
-        print("configuratuion file is in {}/.config/omf")
+        print("install omf in {}/.local/share/omf".format(config.HOMEDIR))
+        print("configuratuion file is in {}/.config/omf".format(config.HOMEDIR ))
         os.system("fish install_omf.fish \
                 --noninteractive \
                 --path={}/.local/share/omf \
                 --config={}/.config/omf".format( config.HOMEDIR, config.HOMEDIR))
 
-        print("install bobthefish theme...", end='')
-        os.system('fish -c "omf install bobthefish"')
-        print('Done')
+        if not omf_exist_package('bobthefish'):
+            print("install bobthefish theme...", end='')
+            os.system('fish -c "omf install bobthefish"')
+            print('Done')
 
-def install_fish_env():
+def move_fish_cofig_file():
+    pass
+
+def install():
     install_fish()
     install_omf()
-    
+    move_fish_cofig_file()
+
+if __name__ == "__main__":
+    pass

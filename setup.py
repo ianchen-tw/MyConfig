@@ -62,12 +62,12 @@ def main():
     # other dotfiles
     for filename in [ '.vimrc' ]:
         filename = Path(filename)
-        # Copy files
         cp_with_backup(src_file=CURDIR/'dotfiles'/filename,des_folder=HOMEDIR)
 
     install_program('tmux')
 
-    pyinstaller.install_python_env()
+    pyinstaller.install()
+    fishinstaller.install()
 
     print("Setup finished")
     print(r'''
