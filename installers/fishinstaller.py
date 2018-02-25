@@ -76,7 +76,7 @@ def install_omf():
             print('Done')
 
 def move_fish_cofig_file():
-    pass
+    print(os.listdir('{}/fish'.format(config.CURDIR)))
 
 def install():
     install_fish()
@@ -84,4 +84,4 @@ def install():
     move_fish_cofig_file()
 
 if __name__ == "__main__":
-    pass
+    move_fish_cofig_file()

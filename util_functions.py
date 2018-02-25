@@ -115,5 +115,4 @@ def require_program(program):
         
         
 if __name__ == "__main__":
-    #cp_with_backup( src_file='./test/src/from.py', des_folder='./test/des/', alter_name='alterone')
-    print (exists_program("tqwerqe"))
+    pass
