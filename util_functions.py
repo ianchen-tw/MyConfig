@@ -1,6 +1,38 @@
 import os
+import filecmp
+import shutil
 from shutil import which
 from config import sudo_install, pkg_manager, pkg_install, pkg_noconfirm
+
+
+from pathlib import Path
+def cp_with_backup( src_file, des_folder, bak_suffix='old'):
+    '''
+        @scr_file : path to filename wich can be constructed by pathlib
+        @des_folder : folder to copy to
+    '''
+    src_file = Path(src_file)
+    des_folder = Path( des_folder )
+
+    if os.path.isdir(des_folder):
+        des_file = Path( des_folder, src_file.name)
+    else:
+        des_file = Path( des_folder.parents[0], src_file.name )
+    
+    print("srcfile:{src}, des_folder:{folder}, des_file:{des}".format(\
+        src=src_file, folder=des_folder, des=des_file))
+    
+    if des_file.exists():
+        if filecmp.cmp( str(src_file), str(des_file) ) is False:
+            # Files not the same, need to backup
+            if user_confirm("Already exist {}, overwrite it? (yes/no) [no]:"\
+                    .format(src_file.name))is True:
+                print("Back up: {oldfile} as: {oldfile}.{bak_suffix}"\
+                        .format( oldfile=des_file, bak_suffix=bak_suffix))
+                des_file.rename( "{}.{}".format(des_file,bak_suffix))
+
+    print("Create: {}".format(str(des_file)))
+    shutil.copy2( str(src_file), str(des_file))
 
 
 def type_check( arg,arg_name,target_type):
@@ -76,3 +108,6 @@ def require_program(program):
             for p in installation_list: install_program(p, no_confirm=True)
         
         
+if __name__ == "__main__":
+    cp_with_backup( src_file='./test/src/from.py', des_folder='./test/des/')
+    
