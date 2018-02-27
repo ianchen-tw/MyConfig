@@ -75,13 +75,24 @@ def install_omf():
             os.system('fish -c "omf install bobthefish"')
             print('Done')
 
-def move_fish_cofig_file():
-    print(os.listdir('{}/fish'.format(config.CURDIR)))
+def move_fish_cofig_file(fishdir, destdir):
+    # fish functions
+    from pathlib import Path
+    dir_to_copy = ['functions','conf.d']
+    for directory in dir_to_copy:
+        #print('dir:'+directory)
+        for file in os.listdir('{fishdir}/{dir}'.format(fishdir=fishdir, dir=directory)):
+            #print('    file:'+str(Path(file)))
+            print("destination: {}".format(destdir))
+            cp_with_backup(src_file='{}/{}/{}'.format(fishdir, directory,file)
+                        ,des_folder='{}/{}'.format(destdir,directory))
+
+    #print(os.listdir(fishdir))
 
 def install():
     install_fish()
     install_omf()
-    move_fish_cofig_file()
+    move_fish_cofig_file(fishdir='./newfish', destdir='{home}/.config/fish/'.format(home=config.HOMEDIR))
 
 if __name__ == "__main__":
-    move_fish_cofig_file()
+    install()
