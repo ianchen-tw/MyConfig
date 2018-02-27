@@ -9,16 +9,23 @@ from pathlib import Path
 def cp_with_backup( src_file, des_folder, bak_suffix='old', alter_name=None):
     '''
         @scr_file : path to filename wich can be constructed by pathlib
-        @des_folder : folder to copy to
+        @des_folder : folder to copy to, must be a path to "folder" which doesn't have to exist
+
         @alter_name : give the new file anotehr name different form the original one
     '''
+    if(os.path.isfile(des_folder)):
+        raise('argument: des_folder must be a folder, not a filename')
+    
+    # create destnation directory if not exist
+    os.makedirs( des_folder, exist_ok=True)
+
     src_file = Path(src_file)
     des_folder = Path( des_folder )
-
+    
     # Determine the output file name 
     des_filename = src_file.name if alter_name is None else alter_name    
      
-    # output file name (with) 
+    # output file name (with)
     if os.path.isdir(des_folder):
         des_file = Path( des_folder, des_filename)
     else:
@@ -35,6 +42,8 @@ def cp_with_backup( src_file, des_folder, bak_suffix='old', alter_name=None):
                         .format( oldfile=des_file, bak_suffix=bak_suffix))
                 des_file.rename( "{}.{}".format(des_file,bak_suffix))
 
+
+    
     # in python3.4
     # shutil don;t support implicit POSIXPath to string 
     print("Create: {}".format(str(des_file)))
