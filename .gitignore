@@ -2,3 +2,6 @@
 *.swp
 *.old
 *.fishd*
+fishd.*
+tags
+*.pyc
