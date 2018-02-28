@@ -83,16 +83,14 @@ def move_fish_cofig_file(fishdir, destdir):
         #print('dir:'+directory)
         for file in os.listdir('{fishdir}/{dir}'.format(fishdir=fishdir, dir=directory)):
             #print('    file:'+str(Path(file)))
-            print("destination: {}".format(destdir))
+            #print("destination: {}".format(destdir))
             cp_with_backup(src_file='{}/{}/{}'.format(fishdir, directory,file)
-                        ,des_folder='{}/{}'.format(destdir,directory))
-
-    #print(os.listdir(fishdir))
+                        ,des_folder='{}/{}'.format(destdir,directory),ask_if_conflict=False)
 
 def install():
     install_fish()
     install_omf()
-    move_fish_cofig_file(fishdir='./newfish', destdir='{home}/.config/fish/'.format(home=config.HOMEDIR))
+    move_fish_cofig_file(fishdir='./fish', destdir='{home}/.config/fish/'.format(home=config.HOMEDIR))
 
 if __name__ == "__main__":
     install()

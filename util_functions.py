@@ -6,7 +6,7 @@ from config import sudo_install, pkg_manager, pkg_install, pkg_noconfirm
 
 
 from pathlib import Path
-def cp_with_backup( src_file, des_folder, bak_suffix='old', alter_name=None, ask_if_exist=True):
+def cp_with_backup( src_file, des_folder, bak_suffix='old', alter_name=None, ask_if_conflict=True):
     '''
         @scr_file : path to filename wich can be constructed by pathlib
         @des_folder : folder to copy to, must be a path to "folder" which doesn't have to exist
@@ -36,18 +36,21 @@ def cp_with_backup( src_file, des_folder, bak_suffix='old', alter_name=None, ask
     if des_file.exists():
         if filecmp.cmp( str(src_file), str(des_file) ) is False:
             # Files not the same, need to backup
-            if ask_if_existis is True and user_confirm("Already exist {}, overwrite it? (yes/no) [no]:"\
+            if ask_if_conflict is False or user_confirm("Already exist {}, overwrite it? (yes/no) [no]:"
                     .format(src_file.name))is True:
-                print("Back up: {oldfile} as: {oldfile}.{bak_suffix}"\
+                print(" Back up: {oldfile} as: {oldfile}.{bak_suffix}"\
                         .format( oldfile=des_file, bak_suffix=bak_suffix))
                 des_file.rename( "{}.{}".format(des_file,bak_suffix))
-
+                print(" Create: {}".format(str(des_file)))
+                shutil.copy2( str(src_file), str(des_file))
+    else:
+        print(" Create: {}".format(str(des_file)))
+        shutil.copy2( str(src_file), str(des_file))
 
     
     # in python3.4
     # shutil don;t support implicit POSIXPath to string 
-    print("Create: {}".format(str(des_file)))
-    shutil.copy2( str(src_file), str(des_file))
+    
 
 
 def type_check( arg,arg_name,target_type):
