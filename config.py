@@ -40,6 +40,13 @@ os_dependent_names = {
         'sudo_install':True,
         'bash_config_file':'.bashrc'
         }
+    ,'Manjaro':{
+        'pkg_manager':'pacman',
+        'pkg_install':'-S',
+        'pkg_noconfirm':'--noconfirm',
+        'sudo_install':True,
+        'bash_config_file':'.bashrc'
+        }
 }
 
 def init():
@@ -48,7 +55,7 @@ def init():
     #print("computing system type...")
     def is_system( sys_name ):
         from subprocess import Popen, PIPE 
-        proc = Popen(['uname','-v'], stdout=PIPE)
+        proc = Popen(['uname','-a'], stdout=PIPE)
         system_info = proc.stdout.read().decode('utf-8')
         return sys_name.upper() in system_info.upper()
     

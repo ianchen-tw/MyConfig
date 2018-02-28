@@ -68,6 +68,7 @@ def main():
 
     install_program('tmux')
 
+    viminstaller.install()
     pyinstaller.install()
     fishinstaller.install()
 
