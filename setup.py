@@ -39,20 +39,22 @@ def exit_handler():
     if os.path.isfile('./install_omf.fish'):
         os.remove('./install_omf.fish')
 
-# Global Variables
-#CURDIR = Path.cwd()
-#HOMEDIR = Path(config.SETUP_DIR)
 os_dependent_names = config.os_dependent_names
 
+def show_batch():
+    print(r'''
+        .___                _________ .__
+        |   |____    ____   \_   ___ \|  |__   ____   ____
+        |   \__  \  /    \  /    \  \/|  |  \_/ __ \ /    \
+        |   |/ __ \|   |  \ \     \___|   Y  \  ___/|   |  \
+        |___(____  /___|  /  \______  /___|  /\___  >___|  /
+                \/     \/          \/     \/     \/     \/
+        ''')
 
 def main():
     print("Initializing")
     check_python_version()
     atexit.register(exit_handler)
-    
-    #print("pkg_manager:{}".format(pkg_manager))
-
-    # Copy files
 
     # bashrc
     #  bashrc is a special file that program should handle it specially
@@ -70,14 +72,7 @@ def main():
     fishinstaller.install()
 
     print("Setup finished")
-    print(r'''
-    .___                _________ .__
-    |   |____    ____   \_   ___ \|  |__   ____   ____
-    |   \__  \  /    \  /    \  \/|  |  \_/ __ \ /    \
-    |   |/ __ \|   |  \ \     \___|   Y  \  ___/|   |  \
-    |___(____  /___|  /  \______  /___|  /\___  >___|  /
-             \/     \/          \/     \/     \/     \/
-    ''')
+    show_batch()
 
 if __name__ =="__main__":
     main()
