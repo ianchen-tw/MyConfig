@@ -6,7 +6,7 @@ from config import sudo_install, pkg_manager, pkg_install, pkg_noconfirm
 
 
 from pathlib import Path
-def cp_with_backup( src_file, des_folder, bak_suffix='old', alter_name=None):
+def cp_with_backup( src_file, des_folder, bak_suffix='old', alter_name=None, ask_if_exist=True):
     '''
         @scr_file : path to filename wich can be constructed by pathlib
         @des_folder : folder to copy to, must be a path to "folder" which doesn't have to exist
@@ -36,7 +36,7 @@ def cp_with_backup( src_file, des_folder, bak_suffix='old', alter_name=None):
     if des_file.exists():
         if filecmp.cmp( str(src_file), str(des_file) ) is False:
             # Files not the same, need to backup
-            if user_confirm("Already exist {}, overwrite it? (yes/no) [no]:"\
+            if ask_if_existis is True and user_confirm("Already exist {}, overwrite it? (yes/no) [no]:"\
                     .format(src_file.name))is True:
                 print("Back up: {oldfile} as: {oldfile}.{bak_suffix}"\
                         .format( oldfile=des_file, bak_suffix=bak_suffix))
