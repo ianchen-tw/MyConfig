@@ -14,10 +14,42 @@ Todo:
 
 import sys
 import os
+import subprocess as sp
 sys.path.append("..")
 import config
 from util_functions import exists_program, user_confirm, require_program, install_program
 
+
+# Environmanet settings
+vim_info_get = False
+vim_feature_table = {}
+def parse_vim_feature():
+    ''' parse vim --version into dictionary
+
+        @return value: a dict of { "feature_name" -> True/False, ... }
+    '''
+    msg = sp.run(['vim','--version'], stdout=sp.PIPE, encoding='utf-8').stdout.split('\n')
+    msg = msg[5:] # delete the starting lines 
+    final_id = 0
+    for line_idx,line in enumerate(msg):
+        if ':' in line:
+            final_id = line_idx
+            break
+    feature_lines = msg[:final_id] # delete the extra infomations
+    features = []
+    for line in feature_lines:
+        features += line.split()
+    feature_dict = {}
+    for feature_str in features:
+        support = {'+':True, '-':False}
+        feature_dict[feature_str[1:]] = support[feature_str[0]] 
+    return feature_dict
+
+if vim_info_get is False:
+    vim_feature_table = parse_vim_feature()
+    vim_info_get = True
+
+# -- Self define functions
 
 def install_vim():
     ''' install vim
@@ -43,6 +75,9 @@ def install_vim_plug():
     os.system('vim -E -c PlugInstall -c PlugClean -c q -c q')
     print("Done")
 
+
 def install():
     install_vim()
     install_vim_plug()
+    if vim_feature_table['lua'] is False:
+        print("**Current vim version is not compiled with lua support**")
