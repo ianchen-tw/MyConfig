@@ -56,8 +56,15 @@ def install_vim():
         must support installing from system pkg manager or self compiling
         OSX user can use brew 
     '''
+
     if not exists_program('vim'):
         install_program('vim')
+    # exist vim, check specific feature support
+    elif vim_feature_table['lua'] is False:
+        print("**Current vim version is not compiled with lua support**")
+        if user_confirm('Compile vim with lua support? (3~5 min required) (yes/no) [no] '):
+            print("compile vim from source...")
+            pass
 
 def install_vim_plug():
 # Vim Plugin manager
@@ -79,5 +86,3 @@ def install_vim_plug():
 def install():
     install_vim()
     install_vim_plug()
-    if vim_feature_table['lua'] is False:
-        print("**Current vim version is not compiled with lua support**")
