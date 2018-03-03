@@ -17,6 +17,7 @@ import os
 import subprocess as sp
 sys.path.append("..")
 import config
+import shutil
 from util_functions import exists_program, user_confirm, require_program, install_program
 
 
@@ -51,6 +52,20 @@ if vim_info_get is False:
 
 # -- Self define functions
 
+def build_vim_from_source():
+    sp.run(['git','clone','https://github.com/vim/vim.git'])
+    os.chdir('./vim')
+    sp.run(['./configure',
+            '--with-features=huge',
+            '--enable-multibyte',
+            '--enable-luainterp=yes',
+            '--enable-fail-if-missing', 
+            '--prefix={HOME}'.format(HOME=config.HOMEDIR)])
+    sp.run(['make', 'install' ,'clean'])
+    os.chdir(os.pardir)
+    shutil.rmtree('./vim')
+
+
 def install_vim():
     ''' install vim
         must support installing from system pkg manager or self compiling
@@ -64,7 +79,8 @@ def install_vim():
         print("**Current vim version is not compiled with lua support**")
         if user_confirm('Compile vim with lua support? (3~5 min required) (yes/no) [no] '):
             print("compile vim from source...")
-            pass
+            build_vim_from_source
+            
 
 def install_vim_plug():
 # Vim Plugin manager
