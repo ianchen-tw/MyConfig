@@ -23,8 +23,8 @@ from installers import viminstaller
 
 # Check python version
 def check_python_version():
-    if sys.version_info.major < 3:
-        print("require Python 3 to run this code")
+    if sys.version_info < (3,4):
+        print("require Python 3.4 to run this code")
         print("run \"python3 setup.py\"")
         exit(1)
 
@@ -34,10 +34,17 @@ if sys.version_info.major >=3:
 def exit_handler():
     ''' Clean up temporary files 
     '''
+    #pyinstaller.py
     if os.path.isfile('./get-pip.py'):
         os.remove('./get-pip.py')
+
     if os.path.isfile('./install_omf.fish'):
         os.remove('./install_omf.fish')
+
+    # viminstaller.py
+    if os.path.isdir('./vim_src'):
+        shutil.rmtree('./vim_src')
+    
 
 os_dependent_names = config.os_dependent_names
 
