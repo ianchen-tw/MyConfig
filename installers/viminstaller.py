@@ -53,8 +53,8 @@ if vim_info_get is False:
 # -- Self define functions
 
 def build_vim_from_source():
-    sp.run(['git','clone','https://github.com/vim/vim.git'])
-    os.chdir('./vim')
+    sp.run(['git','clone','https://github.com/vim/vim.git', 'vim_src'])
+    os.chdir('./vim_src')
     sp.run(['./configure',
             '--with-features=huge',
             '--enable-multibyte',
@@ -63,8 +63,8 @@ def build_vim_from_source():
             '--prefix={HOME}'.format(HOME=config.HOMEDIR)])
     sp.run(['make', 'install' ,'clean'])
     os.chdir(os.pardir)
-    shutil.rmtree('./vim')
-
+    shutil.rmtree('./vim_src')
+    print("Compile vim finished.")
 
 def install_vim():
     ''' install vim
