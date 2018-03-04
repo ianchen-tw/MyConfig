@@ -14,16 +14,19 @@ Todo:
 """
 import sys
 import os
+import subprocess as sp
+
 sys.path.append("..")
 import config
 
 
-from util_functions import exists_program, user_confirm, require_program 
+from util_functions import exists_program, user_confirm, require_program, install_program
 
 #from setup import CURDIR
 from pathlib import Path
 CURDIR = Path.cwd()
 #print( "pyinstaller cur dir:{}".format(Path.cwd()) )
+from config import cur_system
 
 def install_pip3():
     if not exists_program( 'pip3' ):
@@ -43,5 +46,24 @@ def install_pip3():
             os.system("sudo rm -f {}/get-pip.py".format(CURDIR))
             print("Installed pip successfully")
 
+def install_pipenv():
+    ''' pipenv - the offcial python packaging tool
+    '''
+    if cur_system == 'Darwin': # OSX
+        install_program('pipenv')
+    else:
+        sp.run(['pip','install','pipenv']);
+
+def install_pyenv():
+    ''' pyenv - controll different version of python interpreter
+    Note: do not delete the git repo which cloned from remote
+    '''
+    if cur_system == 'Darwin':
+        install_program('pyenv')
+    else:
+        sp.run(['git','clone','https://github.com/pyenv/pyenv.git', '{home}/.pyenv'.format(home=config.HOMEDIR)])
+
 def install():
     install_pip3()
+    install_pipenv()
+    install_pyenv()
