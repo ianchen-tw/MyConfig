@@ -20,10 +20,16 @@ import config
 import shutil
 from util_functions import exists_program, user_confirm, require_program, install_program
 
-
 # Environmanet settings
 vim_info_get = False
 vim_feature_table = {}
+
+install_dict = {
+    'vim':False,
+    'vim-build_from_source':False,
+    'vim-plug': False,
+}
+
 def parse_vim_feature():
     ''' parse vim --version into dictionary
 
@@ -98,6 +104,20 @@ def install_vim_plug():
     os.system('vim -E -c PlugInstall -c PlugClean -c q -c q')
     print("Done")
 
+
+def ask():
+    if (not exists_program('vim')) and user_confirm( "install vim? (yes/no) [Yes]:", default_ans='YES' ):
+        install_dict['vim'] = True
+        if user_confirm('compile vim wiht lua support? (this would add a dit to ~/bin/vim) (yes/no) [No]:'):
+            install_dict['build_from_source'] = True
+    if exists_program('vim') and vim_feature_table['lua'] is False:
+        print("Vim is installed but not compiled with lua support")
+        if user_confirm('compile vim wiht lua support? (this would add a dit to ~/bin/vim) (yes/no) [No]:'):
+            install_dict['vim'] = True
+            install_dict['build_from_source'] = True
+    if install_dict['vim'] is True:
+        user_confirm('Install vim-plug,(Plugin manager for vim) (yes/no) [yes]', default_ans='YES'):
+            install_dict['vim-plug'] = True:
 
 def install():
     install_vim()
