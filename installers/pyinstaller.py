@@ -28,23 +28,28 @@ CURDIR = Path.cwd()
 #print( "pyinstaller cur dir:{}".format(Path.cwd()) )
 from config import cur_system
 
+install_dict ={
+    'pip3' : False,
+    'pipenv': False,
+    'pyenv': False,
+}
+
 def install_pip3():
     if not exists_program( 'pip3' ):
-        if user_confirm("Install pip? (yes/no) [no]:")is True:
-            require_program('curl')
+        require_program('curl')
 
-            print("Downloading 'get-pip.py'...", end='')
-            url = "'https://bootstrap.pypa.io/get-pip.py'"
-            os.system("curl -sfk {} --output {}/get-pip.py".format(url, CURDIR))
-            print("Done")
+        print("Downloading 'get-pip.py'...", end='')
+        url = "'https://bootstrap.pypa.io/get-pip.py'"
+        os.system("curl -sfk {} --output {}/get-pip.py".format(url, CURDIR))
+        print("Done")
 
-            print("ROOT password is required for installing pip")
-            python_ver = sys.version_info
-            cur_py = "python{}.{}".format(python_ver.major, python_ver.minor)
-            os.system("sudo -k {} {}/get-pip.py".format(cur_py,CURDIR))
-            print("Remove temporary file :'get-pip.py'")
-            os.system("sudo rm -f {}/get-pip.py".format(CURDIR))
-            print("Installed pip successfully")
+        print("ROOT password is required for installing pip")
+        python_ver = sys.version_info
+        cur_py = "python{}.{}".format(python_ver.major, python_ver.minor)
+        os.system("sudo -k {} {}/get-pip.py".format(cur_py,CURDIR))
+        print("Remove temporary file :'get-pip.py'")
+        os.system("sudo rm -f {}/get-pip.py".format(CURDIR))
+        print("Installed pip successfully")
 
 def install_pipenv():
     ''' pipenv - the offcial python packaging tool
@@ -63,7 +68,18 @@ def install_pyenv():
     else:
         sp.run(['git','clone','https://github.com/pyenv/pyenv.git', '{home}/.pyenv'.format(home=config.HOMEDIR)])
 
+def ask():
+    def ask_and_store(program):
+        if user_confirm("Install {}? (yes/no) [yes]:".format(program), default_ans=True)is True:
+            install_dict[program] = True
+    ask_and_store('pip3')
+    ask_and_store('pipenv')
+    ask_and_store('pyenv')
+
 def install():
-    install_pip3()
-    install_pipenv()
-    install_pyenv()
+    if install_dict['pip3']:
+        install_pip3()
+    if install_dict['pipenv']:
+        install_pipenv()
+    if install_dict['pyenv']:
+        install_pyenv()
