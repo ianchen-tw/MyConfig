@@ -18,18 +18,22 @@ import subprocess as sp
 from util_functions import exists_program, user_confirm, require_program, install_program
 from util_functions import cp_with_backup
 
+install_dict = {
+    'fish': False,
+    'omf': False,
+}
+
 def install_fish():
-    if not exists_program( 'fish' ):
     # For Ubuntu, the "Ubuntu project shift" is not up-to-date
     #  Add repo that maintained by the fish developers
-        if config.system_name == 'Ubuntu':
-            return_code = sp.Popen(\
-                    ['sudo','add-apt-repository', 'ppa:fish-shell/release-2'],
-                ).wait()
-            print("return code = : {}".format(return_code))
-            if return_code == 0:
-                os.system("sudo apt-get update")
-        install_program("fish")
+    if config.system_name == 'Ubuntu':
+        return_code = sp.Popen(\
+                ['sudo','add-apt-repository', 'ppa:fish-shell/release-2'],
+            ).wait()
+        print("return code = : {}".format(return_code))
+        if return_code == 0:
+            os.system("sudo apt-get update")
+    install_program("fish")
 
 def omf_exist_package( pkg_name ):
     '''Check if plugin exist in omf packcages 
@@ -51,12 +55,6 @@ def omf_exist_package( pkg_name ):
 
 def install_omf():
     if exists_program('fish'):
-        if os.path.isdir('{home}/.config/omf'.format(home=config.HOMEDIR)):
-            msg = "Found existing omf directory, reinstall it? (yes/no) [no]"
-            if user_confirm(msg) is False:
-                return
-        elif user_confirm("Install omf - fish package manager (yes/no) [no]") is False:
-            return 
         # install omf: fish package manager
         require_program('curl')
         url = "'https://get.oh-my.fish'"
@@ -87,10 +85,27 @@ def move_fish_cofig_file(fishdir, destdir):
             cp_with_backup(src_file='{}/{}/{}'.format(fishdir, directory,file)
                         ,des_folder='{}/{}'.format(destdir,directory),ask_if_conflict=False)
 
+def ask():
+    omf_asked = False
+    if not exists_program( 'fish' ):
+        install_dict['fish'] = True
+        # Check existing omf 
+        if os.path.isdir('{home}/.config/omf'.format(home=config.HOMEDIR)):
+            if user_confirm('Found existing omf directory, reinstall it? (yes/no) [no]') is True:
+                install_dict['omf'] = True
+            else:
+                omf_asked = True
+        
+        if omf_asked is False and user_confirm("Install omf - fish package manager (yes/no) [YES]", default_ans='YES') is True:
+            install_dict['omf'] = True
+
 def install():
-    install_fish()
-    install_omf()
-    move_fish_cofig_file(fishdir='./fish', destdir='{home}/.config/fish/'.format(home=config.HOMEDIR))
+    if install_dict['fish'] is True:
+        install_fish()
+        if install_dict['omf'] is True:
+            install_omf()
+        move_fish_cofig_file(fishdir='./fish', destdir='{home}/.config/fish/'.format(home=config.HOMEDIR))
 
 if __name__ == "__main__":
+    ask()
     install()
