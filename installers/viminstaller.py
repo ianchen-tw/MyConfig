@@ -58,7 +58,9 @@ if vim_info_get is False:
 
 # -- Self define functions
 
-def build_vim_from_source():
+def install_vim_build_from_source():
+    require_program('git')
+
     sp.run(['git','clone','https://github.com/vim/vim.git', 'vim_src'])
     os.chdir('./vim_src')
     sp.run(['./configure',
@@ -72,23 +74,15 @@ def build_vim_from_source():
     shutil.rmtree('./vim_src')
     print("Compile vim finished.")
 
-def install_vim():
-    ''' install vim
-        must support installing from system pkg manager or self compiling
-        OSX user can use brew 
+def install_vim_pkg_manager():
+    ''' install vim from client's package manager
     '''
-
     if not exists_program('vim'):
-        install_program('vim')
-    # exist vim, check specific feature support
-    elif vim_feature_table['lua'] is False:
-        print("**Current vim version is not compiled with lua support**")
-        if user_confirm('Compile vim with lua support? (3~5 min required) (yes/no) [no] '):
-            print("compile vim from source...")
-            build_vim_from_source
-            
+        install_program('vim',no_confirm=True)            
 
 def install_vim_plug():
+    ''' script  to install vim-plug 
+    '''
 # Vim Plugin manager
         # Use vim-plug as defualt plugin manager 
     print("Install vim-plug,(Plugin manager for vim)")
@@ -116,9 +110,13 @@ def ask():
             install_dict['vim'] = True
             install_dict['build_from_source'] = True
     if install_dict['vim'] is True:
-        user_confirm('Install vim-plug,(Plugin manager for vim) (yes/no) [yes]', default_ans='YES'):
-            install_dict['vim-plug'] = True:
+        if user_confirm('Install vim-plug,(Plugin manager for vim) (yes/no) [yes]', default_ans='YES'):
+            install_dict['vim-plug'] = True
 
 def install():
-    install_vim()
+    if install_dict['vim-build_from_source']:
+        install_vim_build_from_source()
+    elif install_dict['vim']:
+        install_vim_pkg_manager()
+
     install_vim_plug()
