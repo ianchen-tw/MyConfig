@@ -23,8 +23,8 @@ from installers import viminstaller
 
 # Check python version
 def check_python_version():
-    if sys.version_info < (3,4):
-        print("require Python 3.4 to run this code")
+    if sys.version_info < (3,5):
+        print("require Python 3.5 to run this code")
         print("run \"python3 setup.py\"")
         exit(1)
 
@@ -78,8 +78,8 @@ def main():
 
     # ask to install
     viminstaller.ask()
-    #pyinstaller.ask()
-    #fishinstaller.ask()
+    pyinstaller.ask()
+    fishinstaller.ask()
 
     # install
 
