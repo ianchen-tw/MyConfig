@@ -124,7 +124,7 @@ def require_program(program):
         if installation_list != []:
             warning_info(installation_list)
             for p in installation_list: install_program(p, no_confirm=True)
-        
+
         
 if __name__ == "__main__":
     pass

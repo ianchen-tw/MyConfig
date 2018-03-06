@@ -83,7 +83,7 @@ def install_vim_pkg_manager():
 def install_vim_plug():
     ''' script  to install vim-plug 
     '''
-# Vim Plugin manager
+    # Vim Plugin manager
         # Use vim-plug as defualt plugin manager 
     print("Install vim-plug,(Plugin manager for vim)")
     require_program(['curl','git','vim'])
