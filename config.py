@@ -10,6 +10,18 @@ HOMEDIR = Path(SETUP_DIR)
 # global vars would be setted later
 global cur_system, sudo_install, system_name
 global pkg_manager, pkg_install, pkg_noconfirm
+global git_username ,git_email
+
+#---------------
+# User settings 
+#---------------
+
+git_username  = 'ianre657'
+git_email = 'ianre657@gmail.com'
+
+# --------------------
+# Do not alter contents after this line
+#---------------------
 
 os_dependent_names = {
     'FreeBSD':{
@@ -19,7 +31,7 @@ os_dependent_names = {
         'sudo_install':True,
         'bash_config_file':'.bash_profile',
         }
-    ,'Darwin':{
+    ,'Darwin':{ # OSX
         'pkg_manager':'brew',
         'pkg_install':'install',
         'pkg_noconfirm':'', # not config yet
