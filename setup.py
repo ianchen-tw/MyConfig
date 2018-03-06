@@ -5,6 +5,7 @@ import os, os.path
 import filecmp
 import shutil
 import atexit
+import subprocess as sp
 
 # Personal file
 import config
@@ -75,6 +76,7 @@ def main():
 
     install_program('tmux')
     require_program(['curl','git'])
+    
 
     # ask to install
     viminstaller.ask()
@@ -86,6 +88,19 @@ def main():
     viminstaller.install()
     pyinstaller.install()
     fishinstaller.install()
+
+
+    # Set git info
+    print('[git user identity setting]')
+    cur_git_user_name = sp.run(['git','config','user.name'], stdout=sp.PIPE, encoding='utf-8').stdout
+    cur_git_email = sp.run(['git','config','user.email'], stdout=sp.PIPE, encoding='utf-8').stdout
+    if cur_git_user_name != config.git_username:
+        # change name
+        sp.run(['git','config','--global','user.name',config.git_username])
+    if cur_git_email != config.git_email:
+        # change email 
+        sp.run(['git','config','--global','user.email', config.git_email])
+
 
     print("Setup finished")
     show_batch()

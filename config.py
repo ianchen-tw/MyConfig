@@ -16,7 +16,7 @@ global git_username ,git_email
 # User settings 
 #---------------
 
-git_username  = 'ianre657'
+git_username  = 'Ian Chen'
 git_email = 'ianre657@gmail.com'
 
 # --------------------
