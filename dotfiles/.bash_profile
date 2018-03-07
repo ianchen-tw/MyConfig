@@ -16,11 +16,16 @@ export PS1="\[\e[0;32m\]\h\[\e[0;32m\]: \[\e[0;36m\]\W \[\e[0;31m\][ \[\e[0;33m\
 
 #intructions shortcut
 alias cls='clear'        
-alias e='echo'
 
 #use python3 as default
-alias python='python3'
-alias py='python3'
+#alias python='python3'
+#alias py='python3'
 
+# add user bin directory
+PATH="$HOME/bin:$PATH"
+export PATH
 
-
+# pyenv
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+if command -v pyenv 1>/dev/null 2>&1; then\n  eval "$(pyenv init -)"\nfi
