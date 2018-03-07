@@ -35,9 +35,6 @@ if sys.version_info.major >=3:
 def exit_handler():
     ''' Clean up temporary files 
     '''
-    #pyinstaller.py
-    if os.path.isfile('./get-pip.py'):
-        os.remove('./get-pip.py')
 
     if os.path.isfile('./install_omf.fish'):
         os.remove('./install_omf.fish')
