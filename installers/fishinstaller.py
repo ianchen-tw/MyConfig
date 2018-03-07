@@ -57,16 +57,27 @@ def install_omf():
     if exists_program('fish'):
         # install omf: fish package manager
         require_program('curl')
-        url = "'https://get.oh-my.fish'"
-        os.system("curl -Lsfk {} --output {}/install_omf.fish".format(url, config.CURDIR))
-        print("Done")
+        
+        omf_success = True
+        try:
+            print("Installing omf - the fish package manager...",end='')
+            url = "'https://get.oh-my.fish'"
+            os.system("curl -Lsfk {} --output {}/install_omf.fish".format(url, config.CURDIR))
+            print("Done")
 
-        print("install omf in {}/.local/share/omf".format(config.HOMEDIR))
-        print("configuratuion file is in {}/.config/omf".format(config.HOMEDIR ))
-        os.system("fish install_omf.fish \
-                --noninteractive \
-                --path={}/.local/share/omf \
-                --config={}/.config/omf".format( config.HOMEDIR, config.HOMEDIR))
+            print("install omf in {}/.local/share/omf".format(config.HOMEDIR))
+            print("configuratuion file is in {}/.config/omf".format(config.HOMEDIR ))
+            os.system("fish install_omf.fish \
+                    --noninteractive \
+                    --path={}/.local/share/omf \
+                    --config={}/.config/omf".format( config.HOMEDIR, config.HOMEDIR))
+        except:
+            omf_success = False
+        finally:
+            if os.path.isfile('{}/install_omf.fish'.format(config.CURDIR)):
+                os.remove('{}/install_omf.fish'.format(config.CURDIR))
+            if omf_success:
+                print("Successfully installed omf")
 
         if not omf_exist_package('bobthefish'):
             print("install bobthefish theme...", end='')

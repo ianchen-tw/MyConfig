@@ -35,10 +35,6 @@ if sys.version_info.major >=3:
 def exit_handler():
     ''' Clean up temporary files 
     '''
-
-    if os.path.isfile('./install_omf.fish'):
-        os.remove('./install_omf.fish')
-
     # viminstaller.py
     if os.path.isdir('./vim_src'):
         shutil.rmtree('./vim_src')
