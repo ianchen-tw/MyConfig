@@ -4,7 +4,6 @@ import sys
 import os, os.path
 import filecmp
 import shutil
-import atexit
 import subprocess as sp
 
 # Personal file
@@ -31,13 +30,6 @@ def check_python_version():
 
 if sys.version_info.major >=3:
     from pathlib import Path # python3 only
-
-def exit_handler():
-    ''' Clean up temporary files 
-    '''
-    # viminstaller.py
-    if os.path.isdir('./vim_src'):
-        shutil.rmtree('./vim_src')
     
 
 os_dependent_names = config.os_dependent_names
@@ -55,7 +47,6 @@ def show_batch():
 def main():
     print("Initializing")
     check_python_version()
-    atexit.register(exit_handler)
 
     # bashrc
     #  bashrc is a special file that program should handle it specially

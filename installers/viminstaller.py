@@ -61,18 +61,28 @@ if vim_info_get is False:
 def install_vim_build_from_source():
     require_program('git')
 
-    sp.run(['git','clone','https://github.com/vim/vim.git', 'vim_src'])
-    os.chdir('./vim_src')
-    sp.run(['./configure',
-            '--with-features=huge',
-            '--enable-multibyte',
-            '--enable-luainterp=yes',
-            '--enable-fail-if-missing', 
-            '--prefix={HOME}'.format(HOME=config.HOMEDIR)])
-    sp.run(['make', 'install' ,'clean'])
-    os.chdir(os.pardir)
-    shutil.rmtree('./vim_src')
-    print("Compile vim finished.")
+    build_vim_success = True
+    # os.chdir is not a good way because exceptrion may occur
+    try:
+        sp.run(['git','clone','https://github.com/vim/vim.git', 'vim_src'])
+        os.chdir('./vim_src')
+        sp.run(['./configure',
+                '--with-features=huge',
+                '--enable-multibyte',
+                '--enable-luainterp=yes',
+                '--enable-fail-if-missing', 
+                '--prefix={HOME}'.format(HOME=config.HOMEDIR)])
+        sp.run(['make', 'install' ,'clean'])
+        os.chdir(os.pardir)
+    except:
+        build_vim_success = False
+    finally:
+        if os.path.isdir('./vim_src'):
+            shutil.rmtree('./vim_src')
+        if build_vim_success:
+            print("Compile vim Successfully.")
+        else:
+            print("Failed to compile vim")
 
 def install_vim_pkg_manager():
     ''' install vim from client's package manager
