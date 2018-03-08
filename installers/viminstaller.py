@@ -36,7 +36,11 @@ def parse_vim_feature():
         @return value: a dict of { "feature_name" -> True/False, ... }
     '''
     msg = sp.run(['vim','--version'], stdout=sp.PIPE, encoding='utf-8').stdout.split('\n')
-    msg = msg[5:] # delete the starting lines 
+    for line_id,line in enumerate(msg):
+        if line.startswith('+'):
+            msg = msg[line_id:]
+            break
+    #msg = msg[5:] # delete the starting lines 
     final_id = 0
     for line_idx,line in enumerate(msg):
         if ':' in line:
