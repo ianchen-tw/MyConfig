@@ -66,7 +66,7 @@ def install_vim_build_from_source():
     require_program('git')
 
     if config.system_name == 'Ubuntu':
-        install_program(['lua','liblua5.2-dev'], no_confirm=True)
+        install_program(['lua5.2','liblua5.2-dev'], no_confirm=True)
 
     build_vim_success = True
     # os.chdir is not a good way because exceptrion may occur
