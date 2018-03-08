@@ -118,7 +118,7 @@ def ask():
         print("Vim is installed but not compiled with lua support")
         if user_confirm('compile vim wiht lua support? (this would add a directory to ~/bin/vim) (yes/no) [No]:'):
             install_dict['vim'] = True
-            install_dict['build_from_source'] = True
+            install_dict['vim-build_from_source'] = True
     if install_dict['vim'] is True:
         if user_confirm('Install vim-plug,(Plugin manager for vim) (yes/no) [yes]', default_ans='YES'):
             install_dict['vim-plug'] = True
