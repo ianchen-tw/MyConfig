@@ -75,7 +75,7 @@ def install_pyenv():
 
 def ask():
     def ask_and_store(program):
-        if user_confirm("Install {}? (yes/no) [yes]:".format(program), default_ans=True)is True:
+        if user_confirm("Install {}? (yes/no) [yes]:".format(program), default_ans="YES")is True:
             install_dict[program] = True
     if not exists_program( 'pip3' ):
         ask_and_store('pip3')
