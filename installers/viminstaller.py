@@ -52,7 +52,7 @@ def parse_vim_feature():
         feature_dict[feature_str[1:]] = support[feature_str[0]] 
     return feature_dict
 
-if vim_info_get is False:
+if exists_program('vim') and vim_info_get is False:
     vim_feature_table = parse_vim_feature()
     vim_info_get = True
 
