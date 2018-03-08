@@ -65,6 +65,9 @@ if exists_program('vim') and vim_info_get is False:
 def install_vim_build_from_source():
     require_program('git')
 
+    if config.cur_system == 'Ubuntu':
+        install_program(['lua','liblua5.2-dev'], no_confirm=True)
+
     build_vim_success = True
     # os.chdir is not a good way because exceptrion may occur
     try:
