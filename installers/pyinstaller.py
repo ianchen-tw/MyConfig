@@ -62,7 +62,7 @@ def install_pipenv():
     if cur_system == 'Darwin': # OSX
         install_program('pipenv')
     else:
-        sp.run(['pip','install','pipenv']);
+        sp.run(['pip','install','--user','pipenv']);
 
 def install_pyenv():
     ''' pyenv - controll different version of python interpreter
