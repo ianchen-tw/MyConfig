@@ -85,22 +85,30 @@ def install_program(program, no_confirm=False):
     '''Install specific program from exist package manager
         This function would ask user for installing
     '''
-    type_check( program, 'program', str)
-    if not exists_program(program):
-        if no_confirm is True or user_confirm("Install {}? (yes/no) [no]:".format(program))is True:
-            pkg_dict = { 'pkg':pkg_manager
-                    ,'install':pkg_install
-                    ,'noconfirm':pkg_noconfirm
-                    ,'program':program 
-                    }
-            print("Installing {}...".format(program), end='')
-            if sudo_install is True:
-                os.system('sudo {pkg} {install} {noconfirm} {program}'.format(**pkg_dict))
+    def install_single_program( program, no_confirm=no_confirm):
+        if not exists_program(program):
+            if no_confirm is True or user_confirm("Install {}? (yes/no) [no]:".format(program))is True:
+                pkg_dict = { 'pkg':pkg_manager
+                        ,'install':pkg_install
+                        ,'noconfirm':pkg_noconfirm
+                        ,'program':program 
+                        }
+                print("Installing {}...".format(program), end='')
+                if sudo_install is True:
+                    os.system('sudo {pkg} {install} {noconfirm} {program}'.format(**pkg_dict))
+                else:
+                    os.system('{pkg} {install} {noconfirm} {program}'.format(**pkg_dict))
+                print("Done")
             else:
-                os.system('{pkg} {install} {noconfirm} {program}'.format(**pkg_dict))
-            print("Done")
-        else:
-            exit(1)
+                exit(1)
+    if type(program) is str:
+        install_single_program(program,no_confirm=no_confirm)
+    elif type(program) is list:
+        for p in program:
+            install_program(p, no_confirm=no_confirm)
+    else:
+        raise("Undefined type")
+    
 
 def require_program(program, no_confirm=False):
     '''Install "Essential" program for installation
