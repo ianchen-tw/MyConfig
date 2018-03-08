@@ -130,3 +130,8 @@ def install():
         install_vim_pkg_manager()
 
     install_vim_plug()
+
+if __name__ == "__main__":
+    parse_vim_feature()
+    import pprint
+    pprint.pprint(vim_feature_table)
