@@ -102,7 +102,7 @@ def install_program(program, no_confirm=False):
         else:
             exit(1)
 
-def require_program(program):
+def require_program(program, no_confirm=False):
     '''Install "Essential" program for installation
         Exit program if user refuse to install
         use pkg_maneger to install
@@ -116,14 +116,14 @@ def require_program(program):
         print("  {} is Needed in order to proceed installation".format(nname))
     if type(program) == str and not exists_program(program):
         warning_info(program)
-        install_program(program)
+        install_program(program,no_confirm=no_confirm)
     elif type(program) == list:
         installation_list = []
         for p in program:
             if not exists_program(p): installation_list.append(p)
         if installation_list != []:
             warning_info(installation_list)
-            for p in installation_list: install_program(p, no_confirm=True)
+            for p in installation_list: install_program(p, no_confirm=no_confirm)
 
         
 if __name__ == "__main__":
