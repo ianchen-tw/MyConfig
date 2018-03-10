@@ -33,7 +33,7 @@ def install_fish():
         print("return code = : {}".format(return_code))
         if return_code == 0:
             os.system("sudo apt-get update")
-    install_program("fish")
+    install_program("fish",no_confirm=True)
 
 def omf_exist_package( pkg_name ):
     '''Check if plugin exist in omf packcages 
@@ -97,18 +97,26 @@ def move_fish_cofig_file(fishdir, destdir):
                         ,des_folder='{}/{}'.format(destdir,directory),ask_if_conflict=False)
 
 def ask():
-    omf_asked = False
-    if not exists_program( 'fish' ):
-        install_dict['fish'] = True
-        # Check existing omf 
+    def is_omf_installed():
         if os.path.isdir('{home}/.config/omf'.format(home=config.HOMEDIR)):
-            if user_confirm('Found existing omf directory, reinstall it? (yes/no) [no]') is True:
+            return True
+        else:
+            return False
+
+    if not exists_program( 'fish' ):
+        if user_confirm("install fish shell - a command line shell for the 90s (yes/no) [YES]?", default_ans='YES') is True:            
+            install_dict['fish'] = True
+        # Check existing omf 
+        if install_dict['fish'] is True :
+            if is_omf_installed():
+                if user_confirm('Found existing omf directory, reinstall it? (yes/no) [no]') is True:
+                    install_dict['omf'] = True
+            elif user_confirm("Install omf - fish package manager (yes/no) [YES]", default_ans='YES') is True:
                 install_dict['omf'] = True
-            else:
-                omf_asked = True
-        
-        if omf_asked is False and user_confirm("Install omf - fish package manager (yes/no) [YES]", default_ans='YES') is True:
-            install_dict['omf'] = True
+
+    # user have fish installed already
+    elif user_confirm("Install omf - fish package manager (yes/no) [YES]", default_ans='YES') is True:
+        install_dict['omf'] = True
 
 def install():
     if install_dict['fish'] is True:
