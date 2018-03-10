@@ -79,7 +79,8 @@ def ask():
             install_dict[program] = True
     if not exists_program( 'pip3' ):
         ask_and_store('pip3')
-    ask_and_store('pipenv')
+    if install_dict['pip3'] is True and not exists_program('pipenv'):
+        ask_and_store('pipenv')
     ask_and_store('pyenv')
 
 def install():
