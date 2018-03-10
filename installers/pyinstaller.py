@@ -88,7 +88,7 @@ def ask():
     if install_dict['pip3'] is True and not exists_program('pipenv'):
         ask_and_store('pipenv')
     
-    pyenv_dir = '{home}.pyenv',format(home=config.HOMEDIR)
+    pyenv_dir = '{home}.pyenv'.format(home=config.HOMEDIR)
     if os.path.isdir( pyenv_dir) and not empty_dir(pyenv_dir):
         if user_confirm( 'pyenv : found an existing dir, overwrite it? (yes/no) [NO]',default_ans="NO")is True:
             install_dict['pyenv'] = True
