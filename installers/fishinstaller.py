@@ -115,7 +115,7 @@ def ask():
                 install_dict['omf'] = True
 
     # user have fish installed already
-    elif user_confirm("Install omf - fish package manager (yes/no) [YES]", default_ans='YES') is True:
+    elif is_omf_installed() is False and user_confirm("Install omf - fish package manager (yes/no) [YES]", default_ans='YES') is True:
         install_dict['omf'] = True
 
 def install():
