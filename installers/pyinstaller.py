@@ -77,11 +77,23 @@ def ask():
     def ask_and_store(program):
         if user_confirm("Install {}? (yes/no) [yes]:".format(program), default_ans="YES")is True:
             install_dict[program] = True
+    def empty_dir(directory):
+        if os.listdir(directory)== []:
+            return True
+        else:
+            return False 
+
     if not exists_program( 'pip3' ):
         ask_and_store('pip3')
     if install_dict['pip3'] is True and not exists_program('pipenv'):
         ask_and_store('pipenv')
-    ask_and_store('pyenv')
+    
+    pyenv_dir = '{home}.pyenv',format(home=config.HOMEDIR)
+    if os.path.isdir( pyenv_dir) and not empty_dir(pyenv_dir):
+        if user_confirm( 'pyenv : found an existing dir, overwrite it? (yes/no) [NO]',default_ans="NO")is True:
+            install_dict['pyenv'] = True
+        else:
+            ask_and_store('pyenv')
 
 def install():
     if install_dict['pip3']:
