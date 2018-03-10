@@ -136,7 +136,8 @@ def install():
     elif install_dict['vim']:
         install_vim_pkg_manager()
 
-    install_vim_plug()
+    if install_dict['vim_plug'] is True:
+        install_vim_plug()
 
 if __name__ == "__main__":
     parse_vim_feature()
