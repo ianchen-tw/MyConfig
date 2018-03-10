@@ -26,8 +26,8 @@ vim_feature_table = {}
 
 install_dict = {
     'vim':False,
-    'vim-build_from_source':False,
-    'vim-plug': False,
+    'vim_build_from_source':False,
+    'vim_plug': False,
 }
 
 def parse_vim_feature():
@@ -119,19 +119,19 @@ def install_vim_plug():
 def ask():
     if (not exists_program('vim')) and user_confirm( "install vim? (yes/no) [Yes]:", default_ans='YES' ):
         install_dict['vim'] = True
-        if user_confirm('compile vim wiht lua support? (this would add a dit to ~/bin/vim) (yes/no) [No]:'):
-            install_dict['build_from_source'] = True
+        if user_confirm('compile vim wiht lua support? (this would add a directory to ~/bin/vim) (yes/no) [No]:'):
+            install_dict['vim_build_from_source'] = True
     if exists_program('vim') and vim_feature_table['lua'] is False:
         print("Vim is installed but not compiled with lua support")
         if user_confirm('compile vim wiht lua support? (this would add a directory to ~/bin/vim) (yes/no) [No]:'):
             install_dict['vim'] = True
-            install_dict['vim-build_from_source'] = True
+            install_dict['vim_build_from_source'] = True
     if install_dict['vim'] is True:
         if user_confirm('Install vim-plug,(Plugin manager for vim) (yes/no) [yes]', default_ans='YES'):
-            install_dict['vim-plug'] = True
+            install_dict['vim_plug'] = True
 
 def install():
-    if install_dict['vim-build_from_source']:
+    if install_dict['vim_build_from_source']:
         install_vim_build_from_source()
     elif install_dict['vim']:
         install_vim_pkg_manager()
