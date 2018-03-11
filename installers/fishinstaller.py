@@ -104,7 +104,7 @@ def ask():
             return False
 
     if not exists_program( 'fish' ):
-        if user_confirm("install fish shell - a command line shell for the 90s (yes/no) [YES]?", default_ans='YES') is True:            
+        if user_confirm("install fish shell - a command line shell for the 90s? (yes/no) [YES]", default_ans='YES') is True:            
             install_dict['fish'] = True
         # Check existing omf 
         if install_dict['fish'] is True :
