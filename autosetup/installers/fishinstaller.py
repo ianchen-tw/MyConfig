@@ -12,11 +12,11 @@ Todo:
 """
 import sys
 import os
-sys.path.append("..")
-import config
+#sys.path.append("..")
+import autosetup.config as config
 import subprocess as sp
-from util_functions import exists_program, user_confirm, require_program, install_program
-from util_functions import cp_with_backup
+from ..util_functions import exists_program, user_confirm, require_program, install_program
+from ..util_functions import cp_with_backup
 
 install_dict = {
     'fish': False,

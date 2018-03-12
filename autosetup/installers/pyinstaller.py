@@ -16,17 +16,16 @@ import sys
 import os
 import subprocess as sp
 
-sys.path.append("..")
-import config
+import autosetup.config as config
+from autosetup.config import cur_system
 
-
-from util_functions import exists_program, user_confirm, require_program, install_program
+from ..util_functions import exists_program, user_confirm, require_program, install_program
 
 #from setup import CURDIR
 from pathlib import Path
 CURDIR = Path.cwd()
 #print( "pyinstaller cur dir:{}".format(Path.cwd()) )
-from config import cur_system
+
 
 install_dict ={
     'pip3' : False,
