@@ -2,6 +2,12 @@
 my unix config file
 
 ## Installation
+
+### general
+```sh
+python3.6 -m autosetup
+```
+
 #### Mac
 1. install `Homebrew`
 ```sh

@@ -16,10 +16,11 @@ import sys
 import os
 import subprocess as sp
 
-import autosetup.config as config
-from autosetup.config import cur_system
+from autosetup import globalinfo as config
+from autosetup.globalinfo import cur_system as cur_system
 
-from ..util_functions import exists_program, user_confirm, require_program, install_program
+
+from autosetup.util import exists_program, user_confirm, require_program, install_program
 
 #from setup import CURDIR
 from pathlib import Path

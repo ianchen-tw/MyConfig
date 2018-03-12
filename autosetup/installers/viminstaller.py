@@ -15,9 +15,9 @@ Todo:
 import sys
 import os
 import subprocess as sp
-import autosetup.config as config
+import autosetup.globalinfo as config
 import shutil
-from ..util_functions import exists_program, user_confirm, require_program, install_program
+from ..util import exists_program, user_confirm, require_program, install_program
 
 # Environmanet settings
 vim_info_get = False

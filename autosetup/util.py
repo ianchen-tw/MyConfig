@@ -2,7 +2,7 @@ import os
 import filecmp
 import shutil
 from shutil import which
-from .config import sudo_install, pkg_manager, pkg_install, pkg_noconfirm
+from .globalinfo import sudo_install, pkg_manager, pkg_install, pkg_noconfirm
 
 
 from pathlib import Path

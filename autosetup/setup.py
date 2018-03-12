@@ -6,21 +6,24 @@ import filecmp
 import shutil
 import subprocess as sp
 
+from .globalinfo import git_email, git_username
+
 # Personal file
-import config
+from . import globalinfo as config
 
-from config import CURDIR, HOMEDIR
-from config import bash_file
-from config import cur_system, sudo_install, system_name
-from config import pkg_manager, pkg_install, pkg_noconfirm
+from .globalinfo import CURDIR, HOMEDIR
+from .globalinfo import bash_file
+from .globalinfo import cur_system, sudo_install, system_name
+from .globalinfo import pkg_manager, pkg_install, pkg_noconfirm
 
-from util_functions import type_check, exists_program, user_confirm
-from util_functions import install_program, require_program, cp_with_backup
+from .util import type_check, exists_program, user_confirm
+from .util import install_program, require_program, cp_with_backup
 
-from installers import pyinstaller
-from installers import fishinstaller
-from installers import viminstaller
+from .installers import pyinstaller
+from .installers import fishinstaller
+from .installers import viminstaller
 
+exit(0)
 # Check python version
 def check_python_version():
     if sys.version_info < (3,5):
@@ -45,6 +48,7 @@ def show_batch():
         ''')
 
 def main():
+
     print("Initializing")
     check_python_version()
 
