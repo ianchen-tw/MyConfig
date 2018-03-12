@@ -1,37 +1,18 @@
 # MyConfig
-my unix config file
+
+![Bash promt](./pic/my_bash_promt.png)
+
+My unix configuration file, with auto-setup script inside
 
 ## Installation
-
-### general
 ```sh
+git clone https://github.com/ianre657/MyConfig.git ~/MyConfig
+cd ~/Myconfig
 python3.6 -m autosetup
 ```
 
-#### Mac
-1. install `Homebrew`
-```sh
-/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-```
-2. `brew install python3`
-3. `python3 setup.py`
-
-#### Freebsd
-```sh
-sudo pkg install python3
-python3 setup.py
-```
-#### Ubuntu
-```sh
-sudo apt-get python3
-python3 setup.py
-```
-
 ## Config outline
-#### Bash 
-bash prompt (`PS1`) :
 
-![Bash promt](./pic/my_bash_promt.png)
 #### Vim
 
 1. Plugin Manager : [`vim-plug`](https://github.com/junegunn/vim-plug)
