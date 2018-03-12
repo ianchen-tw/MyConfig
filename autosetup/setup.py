@@ -24,7 +24,6 @@ from .installers import pyinstaller
 from .installers import fishinstaller
 from .installers import viminstaller
 
-exit(0)
 # Check python version
 def check_python_version():
     if sys.version_info < (3,5):
