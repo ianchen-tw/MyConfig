@@ -86,13 +86,9 @@ def install_omf():
 
 def move_fish_cofig_file(fishdir, destdir):
     # fish functions
-    from pathlib import Path
     dir_to_copy = ['functions','conf.d']
     for directory in dir_to_copy:
-        #print('dir:'+directory)
         for file in os.listdir('{fishdir}/{dir}'.format(fishdir=fishdir, dir=directory)):
-            #print('    file:'+str(Path(file)))
-            #print("destination: {}".format(destdir))
             cp_with_backup(src_file='{}/{}/{}'.format(fishdir, directory,file)
                         ,des_folder='{}/{}'.format(destdir,directory),ask_if_conflict=False)
 
