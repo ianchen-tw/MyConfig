@@ -1,4 +1,5 @@
-# Setup tool for IanChen
+# main entry point for the autosetup system
+# Setup tool from IanChen
 
 import sys
 import os, os.path

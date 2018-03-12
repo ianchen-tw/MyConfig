@@ -16,16 +16,9 @@ import sys
 import os
 import subprocess as sp
 
-from autosetup import globalinfo as config
-from autosetup.globalinfo import cur_system as cur_system
-
-
-from autosetup.util import exists_program, user_confirm, require_program, install_program
-
-#from setup import CURDIR
-from pathlib import Path
-CURDIR = Path.cwd()
-#print( "pyinstaller cur dir:{}".format(Path.cwd()) )
+from ..globalinfo import HOMEDIR, CURDIR
+from ..globalinfo import cur_system
+from ..util import exists_program, user_confirm, require_program, install_program
 
 
 install_dict ={
@@ -71,7 +64,7 @@ def install_pyenv():
     if cur_system == 'Darwin':
         install_program('pyenv')
     else:
-        sp.run(['git','clone','https://github.com/pyenv/pyenv.git', '{home}/.pyenv'.format(home=config.HOMEDIR)])
+        sp.run(['git','clone','https://github.com/pyenv/pyenv.git', '{home}/.pyenv'.format(home=HOMEDIR)])
 
 def ask():
     def ask_and_store(program):
@@ -88,7 +81,7 @@ def ask():
     if install_dict['pip3'] is True and not exists_program('pipenv'):
         ask_and_store('pipenv')
     
-    pyenv_dir = '{home}.pyenv'.format(home=config.HOMEDIR)
+    pyenv_dir = '{home}.pyenv'.format(home=HOMEDIR)
     if os.path.isdir( pyenv_dir) and not empty_dir(pyenv_dir):
         if user_confirm( 'pyenv : found an existing dir, overwrite it? (yes/no) [NO]',default_ans="NO")is True:
             install_dict['pyenv'] = True

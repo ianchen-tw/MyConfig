@@ -12,8 +12,9 @@ Todo:
 """
 import sys
 import os
-import autosetup.globalinfo as config
 import subprocess as sp
+
+from ..globalinfo import HOMEDIR, CURDIR, system_name
 from ..util import exists_program, user_confirm, require_program, install_program
 from ..util import cp_with_backup
 
@@ -25,7 +26,7 @@ install_dict = {
 def install_fish():
     # For Ubuntu, the "Ubuntu project shift" is not up-to-date
     #  Add repo that maintained by the fish developers
-    if config.system_name == 'Ubuntu':
+    if system_name == 'Ubuntu':
         return_code = sp.Popen(\
                 ['sudo','add-apt-repository', 'ppa:fish-shell/release-2'],
             ).wait()
@@ -61,20 +62,20 @@ def install_omf():
         try:
             print("Installing omf - the fish package manager...",end='')
             url = "'https://get.oh-my.fish'"
-            os.system("curl -Lsfk {} --output {}/install_omf.fish".format(url, config.CURDIR))
+            os.system("curl -Lsfk {} --output {}/install_omf.fish".format(url, CURDIR))
             print("Done")
 
-            print("install omf in {}/.local/share/omf".format(config.HOMEDIR))
-            print("configuratuion file is in {}/.config/omf".format(config.HOMEDIR ))
+            print("install omf in {}/.local/share/omf".format(HOMEDIR))
+            print("configuratuion file is in {}/.config/omf".format(HOMEDIR ))
             os.system("fish install_omf.fish \
                     --noninteractive \
                     --path={}/.local/share/omf \
-                    --config={}/.config/omf".format( config.HOMEDIR, config.HOMEDIR))
+                    --config={}/.config/omf".format( HOMEDIR, HOMEDIR))
         except:
             omf_success = False
         finally:
-            if os.path.isfile('{}/install_omf.fish'.format(config.CURDIR)):
-                os.remove('{}/install_omf.fish'.format(config.CURDIR))
+            if os.path.isfile('{}/install_omf.fish'.format(CURDIR)):
+                os.remove('{}/install_omf.fish'.format(CURDIR))
             if omf_success:
                 print("Successfully installed omf")
 
@@ -97,7 +98,7 @@ def move_fish_cofig_file(fishdir, destdir):
 
 def ask():
     def is_omf_installed():
-        if os.path.isdir('{home}/.config/omf'.format(home=config.HOMEDIR)):
+        if os.path.isdir('{home}/.config/omf'.format(home=HOMEDIR)):
             return True
         else:
             return False
@@ -122,7 +123,7 @@ def install():
         install_fish()
         if install_dict['omf'] is True:
             install_omf()
-        move_fish_cofig_file(fishdir='./fish', destdir='{home}/.config/fish/'.format(home=config.HOMEDIR))
+        move_fish_cofig_file(fishdir='./fish', destdir='{home}/.config/fish/'.format(home=HOMEDIR))
 
 if __name__ == "__main__":
     ask()

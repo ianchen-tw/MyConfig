@@ -15,8 +15,10 @@ Todo:
 import sys
 import os
 import subprocess as sp
-import autosetup.globalinfo as config
 import shutil
+
+from ..globalinfo import HOMEDIR
+from ..globalinfo import system_name
 from ..util import exists_program, user_confirm, require_program, install_program
 
 # Environmanet settings
@@ -64,7 +66,7 @@ if exists_program('vim') and vim_info_get is False:
 def install_vim_build_from_source():
     require_program('git')
 
-    if config.system_name == 'Ubuntu':
+    if system_name == 'Ubuntu':
         install_program(['lua5.2','liblua5.2-dev'], no_confirm=True)
 
     build_vim_success = True
@@ -77,7 +79,7 @@ def install_vim_build_from_source():
                 '--enable-multibyte',
                 '--enable-luainterp=yes',
                 '--enable-fail-if-missing', 
-                '--prefix={HOME}'.format(HOME=config.HOMEDIR)])
+                '--prefix={HOME}'.format(HOME=HOMEDIR)])
         sp.run(['make', 'install' ,'clean'])
         os.chdir(os.pardir)
     except:
@@ -106,7 +108,7 @@ def install_vim_plug():
     
     os.system('curl -s -fLo {}/.vim/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'\
-    .format(str(config.HOMEDIR)))
+    .format(str(HOMEDIR)))
 
     print("Install and upgrade all vim plugins...",end='')
     # Update all Plugins

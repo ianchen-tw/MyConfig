@@ -1,4 +1,3 @@
-
 global git_username ,git_email
 
 #---------------
