@@ -50,8 +50,9 @@ def show_batch():
 
 def main():
 
-    print("Initializing")
+    print("Initializing...", end='')
     check_python_version()
+    print('done')
 
     # bashrc
     #  bashrc is a special file that program should handle it specially
@@ -81,14 +82,20 @@ def main():
     tmuxinstaller.install()
 
     # Set git info
-    print('[git user identity setting]')
-    cur_git_user_name = sp.run(['git','config','user.name'], stdout=sp.PIPE, encoding='utf-8').stdout
-    cur_git_email = sp.run(['git','config','user.email'], stdout=sp.PIPE, encoding='utf-8').stdout
+        # stdout may contain newline charecter
+    cur_git_user_name = sp.run(['git','config','user.name'], stdout=sp.PIPE, encoding='utf-8').stdout.strip()
+    cur_git_email = sp.run(['git','config','user.email'], stdout=sp.PIPE, encoding='utf-8').stdout.strip()
+    if cur_git_user_name != config.git_username or cur_git_email != config.git_email:
+        print('[ Git user identity setting ]')
     if cur_git_user_name != config.git_username:
         # change name
+        #print('cur name = "{}"'.format(cur_git_user_name))
+        #print('setting name = "{}"'.format(config.git_username))
         sp.run(['git','config','--global','user.name',config.git_username])
     if cur_git_email != config.git_email:
         # change email 
+        #print('cur email = "{}"'.format(cur_git_email))
+        #print('setting email = "{}"'.format(config.git_email))
         sp.run(['git','config','--global','user.email', config.git_email])
 
 

@@ -54,6 +54,7 @@ def omf_exist_package( pkg_name ):
     return pkg_name in msg
 
 def install_omf():
+    print("installing omf")
     if exists_program('fish'):
         # install omf: fish package manager
         require_program('curl')
@@ -111,15 +112,16 @@ def ask():
                 install_dict['omf'] = True
 
     # user have fish installed already
-    elif is_omf_installed() is False and user_confirm("Install omf - fish package manager (yes/no) [YES]", default_ans='YES') is True:
-        install_dict['omf'] = True
+    if exists_program('fish') and not is_omf_installed():
+        if  user_confirm("Install omf - fish package manager (yes/no) [YES]", default_ans='YES') is True:
+            install_dict['omf'] = True
 
 def install():
     if install_dict['fish'] is True:
         install_fish()
-        if install_dict['omf'] is True:
-            install_omf()
         move_fish_cofig_file(fishdir='./fish', destdir='{home}/.config/fish/'.format(home=HOMEDIR))
+    if install_dict['omf'] is True:
+        install_omf()
 
 if __name__ == "__main__":
     ask()
