@@ -122,7 +122,7 @@ def ask():
         install_dict['vim'] = True
         if user_confirm('compile vim wiht lua support? (this would add a directory to ~/bin/vim) (yes/no) [No]:'):
             install_dict['vim_build_from_source'] = True
-    if exists_program('vim') and vim_feature_table['lua'] is False:
+    if exists_program('vim') and (vim_feature_table['lua'] or vim_feature_table['lua/dyn']) is False:
         print("Vim is installed but not compiled with lua support")
         if user_confirm('compile vim wiht lua support? (this would add a directory to ~/bin/vim) (yes/no) [No]:'):
             install_dict['vim'] = True
