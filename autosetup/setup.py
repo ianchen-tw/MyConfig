@@ -23,6 +23,7 @@ from .util import install_program, require_program, cp_with_backup
 from .installers import pyinstaller
 from .installers import fishinstaller
 from .installers import viminstaller
+from .installers import tmuxinstaller
 
 # Check python version
 def check_python_version():
@@ -62,21 +63,22 @@ def main():
         filename = Path(filename)
         cp_with_backup(src_file=CURDIR/'dotfiles'/filename,des_folder=HOMEDIR)
 
-    install_program('tmux')
+
     require_program(['curl','git'])
     
-
+    
     # ask to install
     viminstaller.ask()
     pyinstaller.ask()
     fishinstaller.ask()
+    tmuxinstaller.ask()
 
     # install
 
     viminstaller.install()
     pyinstaller.install()
     fishinstaller.install()
-
+    tmuxinstaller.install()
 
     # Set git info
     print('[git user identity setting]')
