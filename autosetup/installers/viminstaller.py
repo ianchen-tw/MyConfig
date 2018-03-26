@@ -66,6 +66,10 @@ if exists_program('vim') and vim_info_get is False:
 def install_vim_build_from_source():
     require_program('git')
 
+    if system_name == 'Darwin':
+        # install through brew
+        install_program('vim', options='--with-lua')
+        return
     if system_name == 'Ubuntu':
         install_program(['lua5.2','liblua5.2-dev'], no_confirm=True)
 

@@ -81,28 +81,31 @@ def user_confirm( question, default_ans='NO' ):
             else:
                 raise Exception("Internal Error, please check the source code")
 
-def install_program(program, no_confirm=False):
+def install_program(program, no_confirm=False, options=None):
     '''Install specific program from exist package manager
         This function would ask user for installing
     '''
-    def install_single_program( program, no_confirm=no_confirm):
+    def install_single_program( program, no_confirm=no_confirm, options=None):
         if not exists_program(program):
             if no_confirm is True or user_confirm("Install {}? (yes/no) [no]:".format(program))is True:
+                if options != None:
+                    option_string = ' '.join(options)
                 pkg_dict = { 'pkg':pkg_manager
                         ,'install':pkg_install
                         ,'noconfirm':pkg_noconfirm
-                        ,'program':program 
+                        ,'program':program
+                        ,'opt_str': option_string
                         }
                 print("Installing {}...".format(program), end='')
                 if sudo_install is True:
-                    os.system('sudo {pkg} {install} {noconfirm} {program}'.format(**pkg_dict))
+                    os.system('sudo {pkg} {install} {noconfirm} {program} {opt_str}'.format(**pkg_dict))
                 else:
-                    os.system('{pkg} {install} {noconfirm} {program}'.format(**pkg_dict))
+                    os.system('{pkg} {install} {noconfirm} {program} {opt_str}'.format(**pkg_dict))
                 print("Done")
             else:
                 exit(1)
     if type(program) is str:
-        install_single_program(program,no_confirm=no_confirm)
+        install_single_program(program,no_confirm=no_confirm, options=options)
     elif type(program) is list:
         for p in program:
             install_program(p, no_confirm=no_confirm)
