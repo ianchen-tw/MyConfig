@@ -119,9 +119,9 @@ def ask():
 def install():
     if install_dict['fish'] is True:
         install_fish()
-        move_fish_cofig_file(fishdir='./fish', destdir='{home}/.config/fish/'.format(home=HOMEDIR))
     if install_dict['omf'] is True:
         install_omf()
+    move_fish_cofig_file(fishdir='./fish', destdir='{home}/.config/fish/'.format(home=HOMEDIR))
 
 if __name__ == "__main__":
     ask()
