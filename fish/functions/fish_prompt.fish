@@ -21,6 +21,7 @@
 #     set -g theme_display_git_dirty no
 #     set -g theme_display_git_untracked no
 #     set -g theme_display_git_ahead_verbose yes
+#     set -g theme_display_git_dirty_verbose yes
 #     set -g theme_git_worktree_support yes
 #     set -g theme_display_vagrant yes
 #     set -g theme_display_docker_machine no
@@ -221,7 +222,7 @@ end
 
 function __bobthefish_git_ahead_verbose -S -d 'Print a more verbose ahead/behind state for the current branch'
   set -l commits (command git rev-list --left-right '@{upstream}...HEAD' ^/dev/null)
-  [ $status != 0 ]; and return
+    or return
 
   set -l behind (count (for arg in $commits; echo $arg; end | command grep '^<'))
   set -l ahead (count (for arg in $commits; echo $arg; end | command grep -v '^<'))
@@ -239,6 +240,12 @@ function __bobthefish_git_ahead_verbose -S -d 'Print a more verbose ahead/behind
   end
 end
 
+function __bobthefish_git_dirty_verbose -S -d 'Print a more verbose dirty state for the current working tree'
+  set -l changes (command git diff --numstat | awk '{ added += $1; removed += $2 } END { print "+" added "/-" removed }')
+    or return
+
+  echo "$changes " | string replace -r '(\+0/(-0)?|/-0)' ''
+end
 
 # ==============================
 # Segment functions
@@ -334,21 +341,21 @@ function __bobthefish_prompt_status -S -a last_status -d 'Display flags for a no
 
   # Last exit was nonzero
   [ $last_status -ne 0 ]
-    and set nonzero $__bobthefish_nonzero_exit_glyph
+    and set nonzero 1
 
   # If superuser (uid == 0)
   #
   # Note that iff the current user is root and '/' is not writeable by root this
   # will be wrong. But I can't think of a single reason that would happen, and
-  # this way is 99.5% faster to check it this way, so that's a tradeoff I'm
+  # it is literally 99.5% faster to check it this way, so that's a tradeoff I'm
   # willing to make.
   [ -w / ]
     and [ (id -u) -eq 0 ]
-    and set superuser $__bobthefish_superuser_glyph
+    and set superuser 1
 
   # Jobs display
   jobs -p >/dev/null
-    and set bg_jobs $__bobthefish_bg_job_glyph
+    and set bg_jobs 1
 
   if [ "$nonzero" -o "$superuser" -o "$bg_jobs" ]
     __bobthefish_start_segment $__color_initial_segment_exit
@@ -717,6 +724,9 @@ function __bobthefish_prompt_git -S -a current_dir -d 'Display the actual git st
     set -l show_dirty (command git config --bool bash.showDirtyState ^/dev/null)
     if [ "$show_dirty" != 'false' ]
       set dirty (command git diff --no-ext-diff --quiet --exit-code ^/dev/null; or echo -n "$__bobthefish_git_dirty_glyph")
+      if [ "$dirty" -a "$theme_display_git_dirty_verbose" = 'yes' ]
+        set dirty "$dirty"(__bobthefish_git_dirty_verbose)
+      end
     end
   end
 
