@@ -6,7 +6,7 @@ usage: import this module and call install()
 
 Todo:
     + install fish
-    + install omf
+    + install fisher
     + install theme : bobthefish
     + move setting files
 """
@@ -20,7 +20,7 @@ from ..util import cp_with_backup
 
 install_dict = {
     'fish': False,
-    'omf': False,
+    'fisher': False,
 }
 
 def install_fish():
@@ -35,55 +35,48 @@ def install_fish():
             os.system("sudo apt-get update")
     install_program("fish",no_confirm=True)
 
-def omf_exist_package( pkg_name ):
-    '''Check if plugin exist in omf packcages 
+def fisher_exist_package( pkg_name ):
+    '''Check if plugin exist in fisher packcages 
         This function use multiple python version implementation for fun :)
     '''
     vinfo = sys.version_info[0:2]
     if vinfo < (3,5):
-        queryps = sp.Popen([ 'fish', '-c', 'omf list'], stdout=sp.PIPE)
+        queryps = sp.Popen([ 'fish', '-c', 'fisher ls'], stdout=sp.PIPE)
         msg = queryps.communicate()[0].decode("utf-8").split()
     elif vinfo == (3,5):
         # "run" function is added in 3.5
-        msg = sp.run(['fish','-c','omf list'], stdout=sp.PIPE).stdout
+        msg = sp.run(['fish','-c','fisher ls'], stdout=sp.PIPE).stdout
         msg = msg.decode('utf-8').split()
     elif vinfo >= (3,6):
         # "encoding: arg is added in 3.6
-        msg = sp.run(['fish','-c','omf list'], stdout=sp.PIPE, encoding='utf-8').stdout.split()
+        msg = sp.run(['fish','-c','fisher'], stdout=sp.PIPE, encoding='utf-8').stdout.split()
     
     return pkg_name in msg
 
-def install_omf():
-    print("installing omf")
+def install_fisher():
+    print("installing fisherman")
     if exists_program('fish'):
-        # install omf: fish package manager
+        # install fisher: fish package manager
         require_program('curl')
         
-        omf_success = True
+        fisher_success = True
         try:
-            print("Installing omf - the fish package manager...",end='')
-            url = "'https://get.oh-my.fish'"
-            os.system("curl -Lsfk {} --output {}/install_omf.fish".format(url, CURDIR))
+            print("Installing Fisherman - the fish package manager...",end='')
+            location = "{}/.config/fish/functions/fisher.fish".format( HOMEDIR)
+            cmd= "curl -fLo {} --create-dirs https://git.io/fisher".format(location)
+            os.system(cmd)
             print("Done")
 
-            print("install omf in {}/.local/share/omf".format(HOMEDIR))
-            print("configuratuion file is in {}/.config/omf".format(HOMEDIR ))
-            os.system("fish install_omf.fish \
-                    --noninteractive \
-                    --path={}/.local/share/omf \
-                    --config={}/.config/omf".format( HOMEDIR, HOMEDIR))
+            print("install fisher in {}".format(location))
         except:
-            omf_success = False
+            fisher_success = False
         finally:
-            if os.path.isfile('{}/install_omf.fish'.format(CURDIR)):
-                os.remove('{}/install_omf.fish'.format(CURDIR))
-            if omf_success:
-                print("Successfully installed omf")
+            if fisher_success:
+                print("Successfully installed fisherman")
 
-        if not omf_exist_package('bobthefish'):
-            print("install bobthefish theme...", end='')
-            os.system('fish -c "omf install bobthefish"')
-            print('Done')
+        default_plugins = [ 'fzf', 'omf/theme-bobthefish', 'pyenv']
+        plugins = ' '.join(default_plugins)
+        os.system('fish -c "fisher {}"'.format(plugins))
 
 def move_fish_cofig_file(fishdir, destdir):
     # fish functions
@@ -94,8 +87,8 @@ def move_fish_cofig_file(fishdir, destdir):
                         ,des_folder='{}/{}'.format(destdir,directory),ask_if_conflict=False)
 
 def ask():
-    def is_omf_installed():
-        if os.path.isdir('{home}/.config/omf'.format(home=HOMEDIR)):
+    def is_fisher_installed():
+        if os.path.isfile('{home}/.config/fish/functions/fisher.fish'.format(home=HOMEDIR)):
             return True
         else:
             return False
@@ -103,24 +96,24 @@ def ask():
     if not exists_program( 'fish' ):
         if user_confirm("install fish shell - a command line shell for the 90s? (yes/no) [YES]", default_ans='YES') is True:            
             install_dict['fish'] = True
-        # Check existing omf 
+        # Check existing fisher 
         if install_dict['fish'] is True :
-            if is_omf_installed():
-                if user_confirm('Found existing omf directory, reinstall it? (yes/no) [no]') is True:
-                    install_dict['omf'] = True
-            elif user_confirm("Install omf - fish package manager (yes/no) [YES]", default_ans='YES') is True:
-                install_dict['omf'] = True
+            if is_fisher_installed():
+                if user_confirm('Found existing fisherman directory, reinstall it? (yes/no) [no]') is True:
+                    install_dict['fisher'] = True
+            elif user_confirm("Install fisher - fish package manager (yes/no) [YES]", default_ans='YES') is True:
+                install_dict['fisher'] = True
 
     # user have fish installed already
-    if exists_program('fish') and not is_omf_installed():
-        if  user_confirm("Install omf - fish package manager (yes/no) [YES]", default_ans='YES') is True:
-            install_dict['omf'] = True
+    if exists_program('fish') and not is_fisher_installed():
+        if  user_confirm("Install fisher - fish package manager (yes/no) [YES]", default_ans='YES') is True:
+            install_dict['fisher'] = True
 
 def install():
     if install_dict['fish'] is True:
         install_fish()
-    if install_dict['omf'] is True:
-        install_omf()
+    if install_dict['fisher'] is True:
+        install_fisher()
     move_fish_cofig_file(fishdir='./fish', destdir='{home}/.config/fish/'.format(home=HOMEDIR))
 
 if __name__ == "__main__":
