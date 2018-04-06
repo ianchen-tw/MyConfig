@@ -20,6 +20,8 @@ def cp_with_backup( src_file, des_folder, bak_suffix='old', alter_name=None, ask
     os.makedirs( des_folder, exist_ok=True)
 
     src_file = Path(src_file)
+    if not os.path.exists(src_file):
+        raise FileNotFoundError( "file:{} not exist".format(src_file))
     des_folder = Path( des_folder )
     
     # Determine the output file name 
@@ -88,6 +90,7 @@ def install_program(program, no_confirm=False, options=None):
     def install_single_program( program, no_confirm=no_confirm, options=None):
         if not exists_program(program):
             if no_confirm is True or user_confirm("Install {}? (yes/no) [no]:".format(program))is True:
+                option_string = ''
                 if options != None:
                     option_string = ' '.join(options)
                 pkg_dict = { 'pkg':pkg_manager
