@@ -85,7 +85,9 @@ def move_fish_cofig_file(fishdir, destdir):
         for file in os.listdir('{fishdir}/{dir}'.format(fishdir=fishdir, dir=directory)):
             cp_with_backup(src_file='{}/{}/{}'.format(fishdir, directory,file)
                         ,des_folder='{}/{}'.format(destdir,directory),ask_if_conflict=False)
-
+   # move config.fish
+    cp_with_backup(src_file='{}/config.fish'.format(fishdir)
+                        ,des_folder='{}'.format(destdir),ask_if_conflict=True)
 def ask():
     def is_fisher_installed():
         if os.path.isfile('{home}/.config/fish/functions/fisher.fish'.format(home=HOMEDIR)):

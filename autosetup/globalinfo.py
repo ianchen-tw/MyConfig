@@ -10,6 +10,7 @@ HOMEDIR = Path(SETUP_DIR)
 # global vars would be setted later
 global cur_system, sudo_install, system_name
 global pkg_manager, pkg_install, pkg_noconfirm
+global bash_file
 
 #---------------
 # User settings 
