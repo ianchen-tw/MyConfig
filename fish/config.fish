@@ -1,11 +1,10 @@
 alias cls "clear"
+alias sl "ls"
 alias cdd "cd $HOME/Desktop"
 alias cdf "fzf-cd-widget"
 
 alias py "python"
-alias python3 "python3.5"
-alias python "python3"
-alias python3.6 "python3.6-32"
+alias python "python"
 
 
 # ===========================
@@ -25,13 +24,14 @@ alias workstation_bsd "loud_ssh yachen1115 bsd3.cs.nctu.edu.tw bsd3"
 alias nctuplus "loud_ssh yachen1115 plus.nctu.edu.tw NCTU+"
 
 # SSH with different port
-alias ian_NctuDesktop 'echo "login to ian@nctu_desktop"; and ssh ian@140.113.67.102 -p 8022'
+alias ian_NctuDesktop 'echo "login to ian@nctu_desktop"; and ssh  ian@140.113.67.103 -p 20022'
+alias lxc 'echo "login to ian@ii.paga"; and ssh -X ian@ii.paga.moe -p 30000'
 
 
 
 # ============= Setup custom $PATH =======================
-set PATH /Library/Frameworks/Python.framework/Versions/3.5/bin $PATH
-set PATH $HOME/bin $PATH
+#set PATH /Library/Frameworks/Python.framework/Versions/3.5/bin $PATH
+set -x PATH $HOME/bin $PATH
 
 
 # ============= Bobthefish - user configuration ==========
