@@ -8,7 +8,7 @@ My unix configuration file, with auto-setup script inside
 ```sh
 git clone https://github.com/ianre657/MyConfig.git ~/MyConfig
 cd ~/Myconfig
-python3.6 -m autosetup
+python3.6 -m autosetup install
 ```
 
 ## Config outline
