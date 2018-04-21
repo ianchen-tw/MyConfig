@@ -1,10 +1,13 @@
-alias cls "clear"
-alias sl "ls"
+abbr cls "clear"
+abbr sl "ls"
 alias cdd "cd $HOME/Desktop"
-alias cdf "fzf-cd-widget"
+abbr cdf "fzf-cd-widget"
 
-alias py "python"
-alias python "python"
+abbr py "python"
+abbr python "python"
+
+
+
 
 
 # ===========================
@@ -40,8 +43,7 @@ set -g theme_display_date yes
 set -g theme_date_format "+%H:%M"
 set -g theme_newline_cursor yes
 set -g theme_nerd_fonts yes
-set -g theme_color_scheme base-16
-#set -g theme_display_hostname yes
-set -g theme_color_scheme dark
+
+
 
 rvm default
