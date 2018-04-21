@@ -97,7 +97,11 @@ def main():
         #print('cur email = "{}"'.format(cur_git_email))
         #print('setting email = "{}"'.format(config.git_email))
         sp.run(['git','config','--global','user.email', config.git_email])
-
+    # git alias
+    
+    sp.run(['git','config','--global', 'color.ui', 'true'])
+    sp.run(['git','config','--global', 'alias.st', 'status'])
+    sp.run(['git','config','--global','alias.lg',"log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative"])
 
     print("Setup finished")
     show_batch()
