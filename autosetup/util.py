@@ -6,11 +6,15 @@ from .globalinfo import sudo_install, pkg_manager, pkg_install, pkg_noconfirm
 
 
 from pathlib import Path
-def cp_with_backup( src_file, des_folder, bak_suffix='old', alter_name=None, ask_if_conflict=True):
+def cp_with_backup( src_file,
+    des_folder,
+    bak_suffix='old',
+    alter_name=None,
+    ask_if_conflict=True
+    ):
     '''
         @scr_file : path to filename wich can be constructed by pathlib
         @des_folder : folder to copy to, must be a path to "folder" which doesn't have to exist
-
         @alter_name : give the new file anotehr name different form the original one
     '''
     if(os.path.isfile(des_folder)):
