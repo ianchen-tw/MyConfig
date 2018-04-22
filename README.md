@@ -1,6 +1,10 @@
 # MyConfig
 
+##### Bash prompt
 ![Bash promt](./pic/my_bash_promt.png)
+
+##### Fish prompt
+![Fish prompt](./pic/fish_prompt.png)
 
 My unix configuration file, with auto-setup script inside
 
