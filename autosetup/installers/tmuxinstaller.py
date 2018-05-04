@@ -28,5 +28,5 @@ def ask():
 def install():
     if install_dict['tmux']:
         install_program('tmux', no_confirm=True)
-        cp_with_backup(src_file=CURDIR/'dotfiles/tmux.conf',des_folder=HOMEDIR)
+        cp_with_backup(src_file=CURDIR/'dotfiles/.tmux.conf',des_folder=HOMEDIR)
 
