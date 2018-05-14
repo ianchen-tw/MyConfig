@@ -122,11 +122,12 @@ def install_vim_plug():
 
 
 def ask():
+    # Vim
     if (not exists_program('vim')) and user_confirm( "install vim? (yes/no) [Yes]:", default_ans='YES' ):
         install_dict['vim'] = True
         if user_confirm('compile vim wiht lua support? (this would add a directory to ~/bin/vim) (yes/no) [No]:'):
             install_dict['vim_build_from_source'] = True
-    if exists_program('vim') and (
+    elif exists_program('vim') and (
                                 vim_feature_table.get('lua',False) or 
                                 vim_feature_table.get('lua/dyn', False)
                                 )is False:
@@ -134,7 +135,16 @@ def ask():
         if user_confirm('compile vim wiht lua support? (this would add a directory to ~/bin/vim) (yes/no) [No]:'):
             install_dict['vim'] = True
             install_dict['vim_build_from_source'] = True
-    if install_dict['vim'] is True:
+
+    # Vim-plug
+    if( exists_program('vim')
+        and ( vim_feature_table.get('lua',True) or vim_feature_table.get('lua/dyn', True) )is True
+        and not os.path.exists(f'{str(HOMEDIR)}/.vim/autoload/plug.vim')
+    ):
+        if user_confirm('Install vim-plug,(Plugin manager for vim) (yes/no) [yes]', default_ans='YES'):
+            install_dict['vim_plug'] = True
+
+    elif install_dict['vim'] is True:
         if user_confirm('Install vim-plug,(Plugin manager for vim) (yes/no) [yes]', default_ans='YES'):
             install_dict['vim_plug'] = True
 

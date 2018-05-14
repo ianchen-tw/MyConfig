@@ -2,9 +2,9 @@ from pathlib import Path #python3.5 required
 from subprocess import Popen, PIPE
 
 # default setting
-#SETUP_DIR = Path.home()
 global SETUP_DIR, CURDIR, HOMEDIR
 SETUP_DIR = Path.cwd().parent
+#SETUP_DIR = Path.home()
 CURDIR = Path.cwd()
 HOMEDIR = Path(SETUP_DIR)
 # global vars would be setted later
@@ -40,6 +40,13 @@ os_dependent_names = {
         'bash_config_file':'.bash_profile',
         }
     ,'Ubuntu':{
+        'pkg_manager':'apt',
+        'pkg_install':'install',
+        'pkg_noconfirm':'--assume-yes',
+        'sudo_install':True,
+        'bash_config_file':'.bash_profile',
+        }
+    ,'kali':{
         'pkg_manager':'apt',
         'pkg_install':'install',
         'pkg_noconfirm':'--assume-yes',
