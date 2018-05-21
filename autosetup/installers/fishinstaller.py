@@ -28,7 +28,7 @@ def install_fish():
     #  Add repo that maintained by the fish developers
     if system_name == 'Ubuntu':
         return_code = sp.Popen(\
-                ['sudo','add-apt-repository', 'ppa:fish-shell/release-2'],
+                ['sudo','add-apt-repository', 'ppa:fish-shell/release-2', '-y'],
             ).wait()
         print("return code = : {}".format(return_code))
         if return_code == 0:
