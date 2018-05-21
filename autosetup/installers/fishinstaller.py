@@ -78,16 +78,16 @@ def install_fisher():
         plugins = ' '.join(default_plugins)
         os.system('fish -c "fisher {}"'.format(plugins))
 
-def move_fish_cofig_file(fishdir, destdir):
+def move_fish_cofig_file(fishdir, destdir,backup=True):
     # fish functions
     dir_to_copy = ['functions','conf.d']
     for directory in dir_to_copy:
         for file in os.listdir('{fishdir}/{dir}'.format(fishdir=fishdir, dir=directory)):
             cp_with_backup(src_file='{}/{}/{}'.format(fishdir, directory,file)
-                        ,des_folder='{}/{}'.format(destdir,directory),ask_if_conflict=False)
+                        ,des_folder='{}/{}'.format(destdir,directory),ask_if_conflict=False,backup=backup)
    # move config.fish
     cp_with_backup(src_file='{}/config.fish'.format(fishdir)
-                        ,des_folder='{}'.format(destdir),ask_if_conflict=True)
+                        ,des_folder='{}'.format(destdir),ask_if_conflict=True, backup=backup)
 def ask():
     def is_fisher_installed():
         if os.path.isfile('{home}/.config/fish/functions/fisher.fish'.format(home=HOMEDIR)):
