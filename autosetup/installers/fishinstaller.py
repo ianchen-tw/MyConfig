@@ -28,7 +28,7 @@ def install_fish():
     #  Add repo that maintained by the fish developers
     if system_name == 'Ubuntu':
         return_code = sp.Popen(\
-                ['sudo','add-apt-repository', 'ppa:fish-shell/release-2'],
+                ['sudo','add-apt-repository', 'ppa:fish-shell/release-2', '-y'],
             ).wait()
         print("return code = : {}".format(return_code))
         if return_code == 0:
@@ -57,7 +57,7 @@ def install_fisher():
     print("installing fisher")
     os.system('fisher')
 
-def move_fish_cofig_file(fishdir, destdir):
+def move_fish_cofig_file(fishdir, destdir,backup=True):
     # fish functions
     dir_to_copy = ['functions','conf.d']
     for directory in dir_to_copy:

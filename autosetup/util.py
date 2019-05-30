@@ -10,12 +10,14 @@ def cp_with_backup( src_file,
     des_folder,
     bak_suffix='old',
     alter_name=None,
-    ask_if_conflict=True
+    ask_if_conflict=True,
+    backup = False
     ):
     '''
         @scr_file : path to filename wich can be constructed by pathlib
         @des_folder : folder to copy to, must be a path to "folder" which doesn't have to exist
         @alter_name : give the new file anotehr name different form the original one
+        @backup: set to True if don't want to backup
     '''
     if(os.path.isfile(des_folder)):
         raise('argument: des_folder must be a folder, not a filename')
@@ -44,9 +46,10 @@ def cp_with_backup( src_file,
             # Files not the same, need to backup
             if ask_if_conflict is False or user_confirm("Already exist {}, overwrite it? (yes/no) [no]:"
                     .format(src_file.name))is True:
-                print(" Back up: {oldfile} as: {oldfile}.{bak_suffix}"\
-                        .format( oldfile=des_file, bak_suffix=bak_suffix))
-                des_file.rename( "{}.{}".format(des_file,bak_suffix))
+                if backup is True:
+                    print(" Back up: {oldfile} as: {oldfile}.{bak_suffix}"\
+                            .format( oldfile=des_file, bak_suffix=bak_suffix))
+                    des_file.rename( "{}.{}".format(des_file,bak_suffix))
                 print(" Create: {}".format(str(des_file)))
                 shutil.copy2( str(src_file), str(des_file))
     else:

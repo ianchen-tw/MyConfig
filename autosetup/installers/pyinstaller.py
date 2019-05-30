@@ -37,10 +37,9 @@ def install_pip3():
             os.system("curl -sfk {} --output {}/get-pip.py".format(url, CURDIR))
             print("Done")
 
-            print("ROOT password is required for installing pip")
             python_ver = sys.version_info
             cur_py = "python{}.{}".format(python_ver.major, python_ver.minor)
-            os.system("sudo -k {} {}/get-pip.py".format(cur_py,CURDIR))
+            os.system("sudo {} {}/get-pip.py".format(cur_py,CURDIR))
         except:
             pip_success = False
         finally:

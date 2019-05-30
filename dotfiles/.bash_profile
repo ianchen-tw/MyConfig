@@ -46,24 +46,6 @@ export PATH="${HOME}/javacc-6.0/bin/:$PATH"
 
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"
-
-if [ -z "$PS1" ]; then
-  echo This shell is not interactive
-else
-    export SHELL="/usr/local/bin/fish"
-    exec fish
-  if command -v pyenv 1>/dev/null 2>&1; then
+if command -v pyenv 1>/dev/null 2>&1; then
     eval "$(pyenv init -)"
-  fi
-  #eval "$(pipenv --completion)"
-
 fi
-
-# bash prompt
-if [ -f "$(brew --prefix)/opt/bash-git-prompt/share/gitprompt.sh" ]; then
-  __GIT_PROMPT_DIR=$(brew --prefix)/opt/bash-git-prompt/share
-  GIT_PROMPT_ONLY_IN_REPO=1
-  source "$(brew --prefix)/opt/bash-git-prompt/share/gitprompt.sh"
-fi
-
-

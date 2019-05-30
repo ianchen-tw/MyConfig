@@ -9,6 +9,8 @@ from .globalinfo import bash_file
 
 from .installers.fishinstaller import move_fish_cofig_file
 
+if import_dir == "":
+    import_dir = Path.home()
 home=Path(import_dir)
 
 def main():
@@ -20,7 +22,7 @@ def main():
     else:
       alter_name = None
     try:
-      cp_with_backup(src_file=home/file,des_folder=CURDIR/'dotfiles')
+      cp_with_backup(src_file=home/file,des_folder=CURDIR/'dotfiles',backup=False)
     except FileNotFoundError:
       print("ERROR : cannot find file {}".format(home/file))
   load_fish_configs()
