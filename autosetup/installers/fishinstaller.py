@@ -36,7 +36,7 @@ def install_fish():
     install_program("fish",no_confirm=True)
 
 def fisher_exist_package( pkg_name ):
-    '''Check if plugin exist in fisher packcages 
+    '''Check if plugin exist in fisher packcages
         This function use multiple python version implementation for fun :)
     '''
     vinfo = sys.version_info[0:2]
@@ -50,33 +50,12 @@ def fisher_exist_package( pkg_name ):
     elif vinfo >= (3,6):
         # "encoding: arg is added in 3.6
         msg = sp.run(['fish','-c','fisher'], stdout=sp.PIPE, encoding='utf-8').stdout.split()
-    
+
     return pkg_name in msg
 
 def install_fisher():
-    print("installing fisherman")
-    if exists_program('fish'):
-        # install fisher: fish package manager
-        require_program('curl')
-        
-        fisher_success = True
-        try:
-            print("Installing Fisherman - the fish package manager...",end='')
-            location = "{}/.config/fish/functions/fisher.fish".format( HOMEDIR)
-            cmd= "curl -fLo {} --create-dirs https://git.io/fisher".format(location)
-            os.system(cmd)
-            print("Done")
-
-            print("install fisher in {}".format(location))
-        except:
-            fisher_success = False
-        finally:
-            if fisher_success:
-                print("Successfully installed fisherman")
-
-        default_plugins = [ 'fzf', 'omf/theme-bobthefish', 'pyenv']
-        plugins = ' '.join(default_plugins)
-        os.system('fish -c "fisher {}"'.format(plugins))
+    print("installing fisher")
+    os.system('fisher')
 
 def move_fish_cofig_file(fishdir, destdir):
     # fish functions
@@ -85,9 +64,13 @@ def move_fish_cofig_file(fishdir, destdir):
         for file in os.listdir('{fishdir}/{dir}'.format(fishdir=fishdir, dir=directory)):
             cp_with_backup(src_file='{}/{}/{}'.format(fishdir, directory,file)
                         ,des_folder='{}/{}'.format(destdir,directory),ask_if_conflict=False)
-   # move config.fish
+    # move config.fish
     cp_with_backup(src_file='{}/config.fish'.format(fishdir)
                         ,des_folder='{}'.format(destdir),ask_if_conflict=True)
+    # move fishfile (for fisher)
+    cp_with_backup(src_file='{}/fishfile'.format(fishdir)
+                        ,des_folder='{}'.format(destdir))
+
 def ask():
     def is_fisher_installed():
         if os.path.isfile('{home}/.config/fish/functions/fisher.fish'.format(home=HOMEDIR)):
@@ -96,9 +79,9 @@ def ask():
             return False
 
     if not exists_program( 'fish' ):
-        if user_confirm("install fish shell - a command line shell for the 90s? (yes/no) [YES]", default_ans='YES') is True:            
+        if user_confirm("install fish shell - a command line shell for the 90s? (yes/no) [YES]", default_ans='YES') is True:
             install_dict['fish'] = True
-        # Check existing fisher 
+        # Check existing fisher
         if install_dict['fish'] is True :
             if is_fisher_installed():
                 if user_confirm('Found existing fisherman directory, reinstall it? (yes/no) [no]') is True:
