@@ -37,3 +37,15 @@ python3.6 -m autosetup install
 
 ## further Maunal configs
 1. build `vim` with `lua` support in order to use vim plugin : [`Shougo/neocomplete`](https://github.com/Shougo/neocomplete.vim) 
+
+## trouble shooting
+
+### why my font doesn't shows up
+
+You should consider installing either `[powerline font](https://github.com/powerline/fonts)` or `[nerd fonts](https://github.com/ryanoasis/nerd-fonts)`.
+and after that, change the corresponding line in `~/.config/fish/config.fish`
+```fish
+# set these 2 lines accroading to your font type
+set -g theme_nerd_fonts yes 
+set -g theme_powerline_fonts no
+```
