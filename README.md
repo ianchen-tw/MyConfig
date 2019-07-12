@@ -49,3 +49,7 @@ and after that, change the corresponding line in `~/.config/fish/config.fish`
 set -g theme_nerd_fonts yes 
 set -g theme_powerline_fonts no
 ```
+
+## For mac user
+Droid sans mono nerd font is my favorite font
+`brew cask font-droidsansmono-nerd-font`
